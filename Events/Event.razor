@@ -1,0 +1,94 @@
+﻿@page "/events/create/{id:Guid?}"
+
+@* @inject EventRepository Repository *@
+
+<h3>Create Event</h3>
+
+@if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">@ErrorMessage</div>
+}
+
+
+<EditForm Model="Input" OnValidSubmit="CreateEvent">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Title</label>
+        <InputText class="form-control" @bind-Value="@Input.Title" />
+        <ValidationMessage For="() => Input.Title" />
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <InputText class="form-control" @bind-Value="@Input.Description" />
+        <ValidationMessage For="() => Input.Description" />
+    </div>
+    <div class="form-group">
+        <label>Location</label>
+        <InputText class="form-control" @bind-Value="@Input.Location" />
+        <ValidationMessage For="() => Input.Location" />
+    </div>
+
+
+
+    <div class="form-group">
+        <label>StartDate</label>
+        <InputDate class="form-control" @bind-Value="@Input.StartDate" />
+        <ValidationMessage For="() => Input.StartDate" />
+    </div>
+    <div class="form-group">
+        <label>StartTime</label>
+        <input type="time" class="form-control" @bind-value="@Input.StartTime" />
+        <ValidationMessage For="() => Input.StartTime" />
+    </div>
+    <div class="form-group">
+        <label>EndDate</label>
+        <InputDate class="form-control" @bind-Value="@Input.EndDate" />
+        <ValidationMessage For="() => Input.EndDate" />
+    </div>
+    <div class="form-group">
+        <label>EndTime</label>
+        <input type="time" class="form-control" @bind-value="@Input.EndTime" />
+        <ValidationMessage For="() => Input.EndTime" />
+    </div>
+
+
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a class="btn btn-secondary" href="/">Cancel</a>
+    </div>
+
+</EditForm>
+
+
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    //private Event Entity { get; set; } = new ();
+
+    EventInput Input { get; set; } = new();
+
+    string ErrorMessage = string.Empty;
+
+
+
+
+
+    void CreateEvent()
+    {
+        // var result = Repository.ValidateEvent(Input);
+        // if (!result.Result.Success) ErrorMessage = result.Result.Message;
+
+        // ErrorMessage = Entity.ValidateDate();
+        // if (!string.IsNullOrWhiteSpace(ErrorMessage)) return;
+
+        // ErrorMessage = Entity.ValidateLocation();
+        // if (!string.IsNullOrWhiteSpace(ErrorMessage)) return;
+
+        // ErrorMessage = Entity.ValidateMeetupLink();
+        // if (!string.IsNullOrWhiteSpace(ErrorMessage)) return;
+    }
+}
