@@ -1,0 +1,1202 @@
+/*---------------------
+     Spot CSS
+-----------------------*/
+/* Uvoz popularnih fontova */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+:root {
+    --color-rebecca-purple: #663399;
+    /*--bg-footer-t: rgba(39, 52, 68, 0.8);
+    --bg-navbar: #222934;
+    --bg-page: #12263F;
+    --bg-page: #181D25;*/
+    --bg-card: rgba(30, 58, 92, 0);
+    --bg-card-t: rgba(39, 52, 68, 0.6);
+    --bg-card-text: #e7ab3c;
+    --bg-footer: #273444;
+    --bg-footer-t: rgba(30, 58, 92, 0.8);
+    --bg-footer-t20: rgba(30, 58, 92, 0.20);
+    --bg-form: #1E3A5C;
+    --bg-navbar: #1E3A5C;
+    --bg-navbar-t: rgba(34, 41, 52, 0.25);
+    --bg-page: rgb(30, 58, 92);
+    --bg-page-t50: rgba(30, 58, 92, 0.5);
+    --bg-table-head: rgba(30, 58, 92, 0.8);
+    --bs-app-theme: rgb(130, 158, 92);
+    --card-author-bg: rgba(0, 0, 0, 0.2);
+    --card-author-header-text: rgb(255, 255, 255);
+    --z-navbar: 1100;
+    --z-toast: 2000;
+    --spot-primary-font: 'Montserrat', sans-serif;
+    --spot-primary-color: #e7ab3c;
+    --spot-secondary-font: 'Open Sans', sans-serif;
+    --spot-secondary-color: rgba(255, 255, 255, 0.5);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.page, page {
+    display: flex;
+    /*width: 100%;*/
+    max-width: 100%;
+    min-height: 100vh;
+}
+
+.background {
+    background-image: url('/img/bg/bg-image1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.main, main {
+    flex: 1;
+}
+
+.bg-page-header {
+    margin-top: -25px;
+    height: 170px;
+    background-color: rgba(var(--bs-black-rgb), 0.2);
+}
+
+
+.box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.box-evenly-center {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0;
+}
+
+/*---------------------
+  START Home Page
+-----------------------*/
+/* Stilovi za tekst (p) na front page - koristimo klasu .pf */
+.pf {
+    font-family: var(--spot-secondary-font);
+    font-size: 1.1rem;
+    font-weight: 200;
+    line-height: 1.6;
+    color: var(--spot-secondary-color);
+}
+
+/* Stilovi za prilagoðene tagove na front page */
+h1f {
+    font-family: var(--spot-primary-font);
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--spot-primary-color);
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+h1fw {
+    font-family: var(--spot-primary-font);
+    font-size: 3rem;
+    font-weight: 300;
+    color: whitesmoke;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+h2f {
+    font-family: var(--spot-primary-font);
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--spot-primary-color);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+h2fw {
+    font-family: var(--spot-primary-font);
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: whitesmoke;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+h3f {
+    font-family: var(--spot-primary-font);
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--spot-primary-color);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+h3fw {
+    font-family: var(--spot-primary-font);
+    font-size: 2rem;
+    font-weight: 300;
+    color: whitesmoke;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+
+h4f {
+    font-family: var(--spot-primary-font);
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--spot-primary-color);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+h4fw {
+    font-family: var(--spot-primary-font);
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: whitesmoke;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+h5f {
+    font-family: var(--spot-primary-font);
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: #222;
+}
+
+h6f {
+    font-family: var(--spot-primary-font);
+    font-size: 1rem;
+    font-weight: 500;
+    color: #222;
+}
+
+h7f {
+    font-family: var(--spot-primary-font);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #222;
+}
+
+/* Dodatni stilovi za klase na front page (opcionalni modifikatori) */
+.h1f {
+    color: #ff9900; /* Npr. drugaèija boja za dodatnu varijaciju */
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8); /* Jaèi shadow */
+}
+
+.h2f {
+    color: #333;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+}
+
+.h3f {
+    color: #444;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.h4f {
+    color: #444;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.h5f {
+    color: #555;
+}
+
+.h6f {
+    color: #555;
+}
+
+.h7f {
+    color: #666;
+}
+
+/* Responzivnost za manje ekrane */
+@media (max-width: 768px) {
+    h1f {
+        font-size: 2.2rem;
+    }
+
+    h2f {
+        font-size: 1.8rem;
+    }
+
+    h3f {
+        font-size: 1.5rem;
+    }
+
+    h4f {
+        font-size: 1.2rem;
+    }
+
+    h5f {
+        font-size: 1rem;
+    }
+
+    h6f {
+        font-size: 0.9rem;
+    }
+
+    h7f {
+        font-size: 0.65rem;
+    }
+
+    .pf {
+        font-size: 1rem;
+    }
+
+    /* Responzivnost za klase */
+    .h1f {
+        font-size: 2rem;
+    }
+
+    .h2f {
+        font-size: 1.6rem;
+    }
+
+    .h3f {
+        font-size: 1.4rem;
+    }
+
+    .h4f {
+        font-size: 1.1rem;
+    }
+
+    .h5f {
+        font-size: 0.9rem;
+    }
+
+    .h6f {
+        font-size: 0.8rem;
+    }
+
+    .h7f {
+        font-size: 0.6rem;
+    }
+}
+/*---------------------
+  END Home Page
+-----------------------*/
+
+/*---------------------
+  START Sidebar
+-----------------------*/
+/*.sidebar, sidebar {*/
+/*background-image: linear-gradient(180deg, rgba(34, 41, 52, 0.1), rgba(128, 128, 128, 0.7));*/
+/*background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);*/
+/*background-image: linear-gradient(45deg, var(--bg-navbar-t), var(--bg-page-t));*/
+/*background-color: rgba(128, 128, 128, 0.2) !important;*/
+/*background-color: rgba(22, 22, 22, 0.2) !important;
+}
+
+.sidebarExpanded {
+    width: 170px;
+    transition: width 0.3s ease;
+}
+
+.sidebarCollapsed {
+    width: 50px;
+    transition: width 0.3s ease;
+}
+
+@media (max-width: 640px) {
+    .sidebarCollapsed {
+        width: 25px;
+        transition: width 0.3s ease;
+    }
+}
+
+@media (min-width: 641px) {*/
+/*.page {
+        flex-direction: row;
+    }*/
+
+/*.sidebar {*/
+/*width: 200px;*/
+/*height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+}*/
+/*---------------------
+  END Sidebar
+-----------------------*/
+
+
+/*---------------------
+  Summernote
+-----------------------*/
+.note-editor.fullscreen {
+    z-index: 3050 !important;
+}
+
+
+/*---------------------
+  Nav-link
+-----------------------*/
+.nav-link {
+    color: gray !important;
+}
+
+    .nav-link.active {
+        color: white !important;
+    }
+
+.nav-link-custom {
+    display: flex;
+    align-items: start;
+    justify-content: left;
+    color: gray !important;
+    padding: 2px 8px;
+}
+
+    .nav-link-custom:hover {
+        /*padding: 6px;*/
+        color: whitesmoke !important;
+        text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        font-weight: bold;
+    }
+
+    .nav-link-custom.active {
+        color: white !important;
+        font-weight: bold;
+    }
+
+
+
+/*---------------------
+  START Pill
+-----------------------*/
+.darkslateblue-pill {
+    background-color: darkslateblue; /* Pozadinska boja */
+    color: white; /* Boja teksta */
+    border: 1px solid darkslateblue; /* Granica */
+    padding: 0.2rem 1rem; /* Prostor unutar dugmeta */
+    border-radius: 50rem; /* Zaokruženi rubovi (pill shape) */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Glatka tranzicija */
+}
+
+    .darkslateblue-pill:hover {
+        background-color: white; /* Hover pozadinska boja */
+        color: darkslateblue; /* Hover boja teksta */
+        border-color: darkslateblue; /* Hover boja granice */
+    }
+/*---------------------
+  END Pill
+-----------------------*/
+
+.custom-tooltip {
+    --bs-tooltip-bg: darkslateblue;
+    --bs-tooltip-color: #ffffff;
+}
+
+
+/*@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+html, body {
+    font-family: 'Lato', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+p {
+    font-family: 'Lato', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, h7 {
+    font-family: 'Roboto', sans-serif;
+}*/
+
+.h7, h7 {
+    font-size: 0.75rem;
+}
+
+.h1-shadow {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
+}
+
+.h2-shadow {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.h3-shadow {
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+.h4-shadow {
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+
+
+/*---------------------
+  START Backgrounds
+-----------------------*/
+.bg-navbar {
+    background-color: var(--bg-form);
+}
+
+.bg-navbar-t50 {
+    background-color: var(--bg-navbar-t);
+}
+
+.bg-header {
+    /*margin-top: -25px;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);*/
+    height: 170px;
+    background-color: rgba(var(--bs-black-rgb), 0.2);
+    /*background-color: var(--bg-transparent-black20);*/
+    /*background: linear-gradient(to bottom, #222934, #12263F);*/
+    /*background: linear-gradient(to bottom, #4E607A, var(--bg-page-t));*/
+    /*background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 30%, rgba(0, 0, 0, 0.15) 50%, rgba(0, 0, 0, 0.1) 70%);*/
+}
+
+.bg-header-home {
+    height: 50px;
+    /*background: linear-gradient(to bottom, #4E607A, var(--bg-page-t));
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;*/
+}
+
+.bg-header-author {
+    height: 150px;
+    background: rgba(var(--bs-black-rgb), 0.1);
+}
+
+.bg-header-product {
+    height: 170px;
+    background-image: url('/img/banner/ag2.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.bg-header-coupons {
+    height: 170px;
+    background-image: url('/img/banner/00.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.bg-transparent {
+    background-color: transparent !important;
+}
+
+.bg-transparent10 {
+    background-color: rgba(var(--bs-black-rgb), 0.1);
+}
+
+.bg-transparent20 {
+    background-color: rgba(var(--bs-black-rgb), 0.2);
+}
+
+.bg-transparent30 {
+    background-color: rgba(var(--bs-black-rgb), 0.3);
+}
+
+.bg-transparent50 {
+    background-color: rgba(var(--bs-black-rgb), 0.5);
+}
+
+.bg-transparent60 {
+    background-color: rgba(var(--bs-black-rgb), 0.6);
+}
+
+.bg-transparent80 {
+    background-color: rgba(var(--bs-black-rgb), 0.8);
+}
+
+
+.bg-page {
+    background-color: var(--bg-page);
+}
+
+.bg-page-t {
+    background-color: var(--bg-page-t50);
+}
+
+.bg-page-product {
+    background-color: var(--bg-form);
+}
+
+.bg-form {
+    background-color: var(--bg-form);
+}
+
+.bg-form-left {
+    border-radius: 0.5rem;
+    background-color: rgba(var(--bs-black-rgb), 0.2);
+}
+
+.bg-form-right {
+    border-radius: 0.5rem;
+    background-color: rgba(var(--bs-black-rgb), 0.1);
+}
+
+.bg-footer {
+    background-color: var(--bg-footer);
+}
+
+.bg-footer-t20 {
+    background-color: var(--bg-footer-t20);
+}
+
+.bg-footer-t {
+    background-color: var(--bg-footer-t);
+}
+
+.bg-aside {
+    background: linear-gradient(to bottom, var(--bg-form), var(--bg-page)) 30%;
+}
+
+.bg-card-t {
+    background-color: var(--bg-card-t);
+}
+/*---------------------
+  END Backgrounds
+-----------------------*/
+
+
+
+.border-dashed {
+    border: 0.5px dashed gray;
+}
+
+a.no-underline {
+    text-decoration: none !important;
+    /*color: white !important;*/
+}
+
+
+
+.img-sidebar-collapsed {
+    width: 30px;
+    border-radius: 50%;
+    /*border: 0.5px dashed white;*/
+    padding: 2px;
+    /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);*/
+}
+
+.img-sidebar-expanded {
+    width: 55px;
+    border-radius: 50%;
+    border: 0.5px dashed white;
+    padding: 5px;
+    /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);*/
+}
+
+.img-avatar {
+    border-radius: 50%;
+    border: 0.5px dashed white;
+    padding: 5px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.img-hero {
+    width: 100px;
+    border-radius: 2%;
+    border: 0.5px white;
+    /*padding: 5px;*/
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.img-product {
+    border-radius: 5%;
+    border: 0.5px dashed white;
+    padding: 5px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.role-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(25%, -20%);
+}
+
+
+
+/*---------------------
+  START icon
+-----------------------*/
+.icon-resize {
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 2px;
+    background-color: transparent;
+    border: 0.1px dotted gray;
+    border-radius: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+    .icon-resize:hover {
+        transform: scale(1.2);
+        box-shadow: 2px 2px 3px rgba(255, 255, 255, 0.1);
+    }
+
+.icon-zoom:hover {
+    transform: scale(1.2);
+    text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.1);
+}
+
+.icon-circle {
+    background-color: rgba(0, 0, 0, 0.3);
+    font-size: 1.2rem; /* Velièina ikone, prilagodljivo */
+    border-radius: 50%; /* Krug oko ikone */
+    border: 0px solid white; /* Bijeli rub */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Lagani shadow */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem; /* Širina kruga */
+    height: 2.2rem; /* Visina kruga */
+    transition: all 0.3s ease; /* Glatki prijelaz za hover efekt */
+}
+
+    .icon-circle:hover {
+        background-color: #273444; /* Promjena pozadine na hover */
+        border: 1px solid white; /* Bijeli rub */
+        color: black; /* Promjena boje ikone na hover */
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* Poveæani shadow na hover */
+        transform: scale(1.2) rotate(-2deg); /* Blago poveæanje kod hover efekta */
+    }
+
+.icon-addhover:hover {
+    transition: all 0.3s ease;
+    color: #1E3A5C;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+    /*fill: #1E3A5C !important;*/
+}
+
+.icon-search {
+    position: absolute;
+    top: 50%; /* Vertikalno centriranje */
+    right: 1%; /* Postavi desnu poziciju */
+    transform: translateY(-52%); /* Poravnava vertikalno toèno na sredinu */
+    color: gray;
+}
+
+    .icon-search:hover {
+        transition: all 0.3s ease;
+        color: white;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+
+.icon-delete {
+    margin-top: -14px;
+    margin-right: -9px;
+}
+
+    .icon-delete:hover {
+        color: white !important;
+        transition: all 0.3s ease;
+        transform: scale(1.2);
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+.icon-delete-images {
+    margin-right: 17px;
+}
+
+    .icon-delete-images:hover {
+        color: white !important;
+        transition: all 0.3s ease;
+        transform: scale(1.2);
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+/*---------------------
+  Icon Success for Modal
+-----------------------*/
+.icon-success {
+    color: green;
+    animation: icon-bounce 2s ease infinite;
+    display: inline-block;
+    will-change: transform;
+}
+
+@keyframes icon-bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+
+/*---------------------
+  START Svg Icons for Modal
+-----------------------*/
+.success-checkmark {
+    width: 10rem;
+    height: 10rem;
+    stroke-width: 4;
+    stroke: green;
+    stroke-miterlimit: 10;
+    fill: none;
+    stroke-linecap: round;
+    animation: icon-scale 0.5s ease-out forwards;
+}
+
+.checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: circle-draw 0.6s ease-out forwards;
+}
+
+.checkmark-check {
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: checkmark-draw 0.3s 0.6s ease-out forwards;
+}
+
+.error-xmark {
+    width: 10rem;
+    height: 10rem;
+    stroke-width: 4;
+    stroke: red;
+    stroke-miterlimit: 10;
+    fill: none;
+    stroke-linecap: round;
+    animation: icon-scale 0.5s ease-out forwards;
+}
+
+.xmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: circle-draw 0.6s ease-out forwards;
+}
+
+.xmark-check {
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: xmark-draw 0.3s 0.6s ease-out forwards;
+}
+
+@keyframes icon-scale {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes circle-draw {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes checkmark-draw {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes xmark-draw {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+/*---------------------
+  END Svg Icons for Modal
+-----------------------*/
+
+
+.custom-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-page);
+}
+
+    .custom-input::placeholder {
+        text-align: center; /* Centriranje placeholder teksta */
+        /*font-size: 0.8rem;*/ /* Smanjenje fonta za placeholder */
+        /*color: rgba(0, 0, 0, 0.5);*/ /* Možeš promijeniti i boju placeholdera */
+    }
+
+/*---------------------
+  START Login Register input
+-----------------------*/
+
+.login-input {
+    text-align: center;
+    background-color: rgba(var(--bs-black-rgb), 0.2);
+}
+
+    .login-input::placeholder {
+        text-align: center;
+    }
+
+.login-validation-message {
+    font-size: 0.75rem;
+    color: rgb(220, 53, 69);
+}
+
+.form-check-input {
+    background-color: rgba(var(--bs-black-rgb), 0.1);
+}
+
+.register-input {
+    text-align: center;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1.5px solid whitesmoke;
+    background-color: transparent !important;
+    /*background-color: rgba(var(--bs-black-rgb), 0.1) !important;*/
+}
+
+/*---------------------
+  END Login input
+-----------------------*/
+
+
+
+/*.input-custom {
+    padding-left: 15px;
+    background-color: var(--bg-footer-t);
+    z-index: 0;
+    margin-right: -30px;
+}
+
+    .input-custom::placeholder {
+        background-color: transparent;*/
+/*color: rgba(0, 0, 0, 0.5);*/
+/*}*/
+.input-custom {
+    /*color: white !important;*/
+    padding-left: 15px;
+    margin-right: -50px;
+    background-color: var(--bg-footer) !important;
+    z-index: 0;
+}
+
+    .input-custom::placeholder {
+        /*color: rgba(255, 255, 255, 0.5) !important;*/
+        /*background-color: transparent !important;*/
+        outline: none !important;
+    }
+
+    .input-custom:focus {
+        /*color: white !important;*/
+        /*background-color: transparent !important;*/
+        outline: none !important;
+    }
+
+
+.inputtext-form {
+    border: none;
+    border-radius: 0;
+    border-bottom: 1.5px solid whitesmoke;
+    background-color: transparent !important;
+    /*background-color: rgba(var(--bs-black-rgb), 0.1) !important;*/
+}
+
+.inputfile-form {
+    border: none;
+    border-radius: 0;
+    border-bottom: 1.5px solid whitesmoke;
+    background-color: transparent !important;
+    /*background-color: rgba(var(--bs-black-rgb), 0.1) !important;*/
+}
+
+
+
+
+
+
+/*---------------------
+  START Table Quick grid
+-----------------------*/
+.quickgrid-wrapper {
+    /*margin-top: -43px;*/
+    margin-top: 15px;
+    padding: 0;
+    background-color: rgba(var(--bs-black-rgb), 0.2);
+    border-radius: 5px;
+    border: 0.5px solid rgba(var(--bs-black-rgb), 0.2);
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.quickgrid-wrapper-sm {
+    margin-top: 22px;
+    padding: 0;
+    background-color: rgba(var(--bs-black-rgb), 0.2);
+    border-radius: 5px;
+    border: 0.5px solid rgba(var(--bs-black-rgb), 0.2);
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.quickgrid-pagination {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+
+.table-overlap {
+    margin-top: -49px;
+}
+
+/*---------------------
+  Quick grid Table
+-----------------------*/
+.table thead th {
+    /*background-color: var(--bg-table-head) !important;*/
+    background-color: rgba(var(--bs-black-rgb), 0.2) !important;
+}
+
+.table tbody td {
+    background-color: rgba(var(--bs-black-rgb), 0.1) !important;
+}
+
+/*---------------------
+  Fix .NET9 Sakrij redove u QuickGrid tablici, gdje su sve æelije prazne
+-----------------------*/
+.quickgrid tbody tr:not(:has(td:not(:empty))) {
+    display: none;
+}
+
+
+
+
+/*---------------------
+  SfGrid Table
+-----------------------*/
+.e-headercell {
+    background-color: rgba(30, 58, 92, 1) !important;
+}
+
+.e-rowcell {
+    background-color: rgba(30, 58, 92, 0.2) !important;
+}
+
+.e-altrow {
+    background-color: rgba(30, 58, 92, 0.5) !important;
+}
+
+.e-pager {
+    background-color: transparent !important;
+}
+
+
+
+
+
+
+
+
+.carousel-search-bar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 100%;
+    text-align: center;
+}
+
+
+.image-zoom:hover {
+    transition: all 0.5s ease;
+    transform: scale(1.1);
+}
+
+
+
+
+/*---------------------
+  Card hover
+-----------------------*/
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .card-hover:hover {
+        transform: scale(1.02) rotate(-0.2deg);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 1); /* horizontal offset, vertical offset, blur radius */
+    }
+
+
+
+
+
+
+
+
+
+
+/*---------------------
+  START Margin
+-----------------------*/
+.mt-QuickGrid {
+    margin-top: -43px;
+}
+
+.mt-SfGrid {
+    margin-top: -40px;
+}
+
+.mt-25 {
+    margin-top: 25px !important;
+}
+
+.mt-50 {
+    margin-top: 50px !important;
+}
+
+.mt-60 {
+    margin-top: 60px !important;
+}
+
+.mt-70 {
+    margin-top: 70px !important;
+}
+
+.mt-100 {
+    margin-top: 100px;
+}
+
+.mt-150 {
+    margin-top: 150px;
+}
+
+.mt-min10 {
+    margin-top: -8px;
+}
+
+.mt-min20 {
+    margin-top: -20px;
+}
+
+.mt-min25 {
+    margin-top: -25px;
+}
+
+.mt-min30 {
+    margin-top: -30px;
+}
+
+.mt-min40 {
+    margin-top: -40px;
+}
+
+.mt-min45 {
+    margin-top: -45px;
+}
+
+.mt-min50 {
+    margin-top: -50px;
+}
+
+.mt-min55 {
+    margin-top: -53px;
+}
+
+.mt-min60 {
+    margin-top: -60px;
+}
+
+.mt-min65 {
+    margin-top: -65px;
+}
+
+.mt-min70 {
+    margin-top: -70px;
+}
+
+.mt-min73 {
+    margin-top: -73px;
+}
+
+
+.mb-min20 {
+    margin-bottom: -20px;
+}
+
+.mb-50 {
+    margin-bottom: 50px;
+}
+
+.mb-70 {
+    margin-bottom: 70px;
+}
+
+.mb-80 {
+    margin-bottom: 80px;
+}
+
+.mb-100 {
+    margin-bottom: 100px;
+}
+
+.mb-150 {
+    margin-bottom: 150px;
+}
+
+.mb-200 {
+    margin-bottom: 200px;
+}
+
+.ms-min20 {
+    margin-left: -20px;
+}
+
+.me-min30 {
+    margin-right: -30px;
+}
+
+
+
+.pt-header {
+    padding-top: 4rem !important;
+    padding-left: 2rem !important;
+}
+
+
+.end-min20 {
+    right: -20% !important;
+}
+
+.end-min50 {
+    right: -50% !important;
+}
+
+
+
+
+
+
+
+
+/*---------------------
+  ADMIN Title
+-----------------------*/
+.admin-title {
+    margin-top: -40px;
+}
+
+@media only screen and (max-width: 991px) {
+    .admin-title {
+        margin-top: 20px; /* For Mobile */
+        padding: 5px 0 5px 0;
+        background-color: rgba(var(--bs-black-rgb), 0.2);
+        /*border: 1px solid white;*/
+        border-radius: 5px;
+    }
+}

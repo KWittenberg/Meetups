@@ -1,23 +1,35 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@inject AppState App
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
 
-        <article class="content px-4">
+<page class="background" data-bs-theme="dark" style="background-image: url('@(string.IsNullOrEmpty(App.Background?.ImageUrl) ? Placeholder.BackgroundUrl : App.Background?.ImageUrl)')">
+    <CascadingValue Value="@App">
+        <Sidebar IsOpen="@IsSidebarOpen" />
+
+        <Settings OnChange="@App.ChangeContent" />
+        <Toast />
+        <Progress></Progress>
+        <Confirmation />
+        <DeleteConfirmation />
+        <main style="margin-left: @(IsSidebarOpen ? "170px" : "0");">
+            <Toprow IsOpen="IsSidebarOpen" OnToggleSidebar="ToggleSidebar" />
             @Body
-        </article>
-    </main>
-</div>
+        </main>
+    </CascadingValue>
+</page>
+
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+
+@code
+{
+    bool IsSidebarOpen = true;
+
+    void ToggleSidebar() => IsSidebarOpen = !IsSidebarOpen;
+}

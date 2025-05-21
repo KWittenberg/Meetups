@@ -1,0 +1,31 @@
+<div class="top-row">
+    <i class="bi @(IsOpen ? "bi-chevron-left" : "bi-list")" @onclick="OnToggleSidebar"></i>
+
+    <AuthorizeView>
+        <Authorized>
+            <div class="nav-item px-3 d-flex justify-content-center align-content-center">
+                @* @if (App?.CurrentUser is not null)
+                {
+                    <h7>Hi @App?.CurrentUser?.FirstName</h7>
+                } *@
+                <form action="Account/Logout" method="post">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="ReturnUrl" value="#" />
+                    <button type="submit" class="nav-link">
+                        <span class="ms-2 bi bi-arrow-bar-left" aria-hidden="true"></span> Logout
+                    </button>
+                </form>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+    
+    @* <a href="#" target="_blank">About</a> *@
+</div>
+
+@code {
+    [CascadingParameter] AppState? App { get; set; }
+    
+    [Parameter] public bool IsOpen { get; set; }
+
+    [Parameter] public EventCallback OnToggleSidebar { get; set; }
+}

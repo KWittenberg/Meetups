@@ -1,13 +1,93 @@
 ﻿@page "/"
 
-<PageTitle>Events</PageTitle>
+@inject IEventRepository Repository
 
-<h3>Events</h3>
 
-<a href="/events/create" class="btn btn-primary">Add Event</a>
+
+
+<title>@Title</title>
+
+@* <PageHeader Title="@Title" AddButtonText="Add Screen" AddButtonLink="screen" /> *@
+
+<a href="/event" class="btn btn-primary">Add Event</a>
+
+@if (IsProcessing || Entities is null)
+{
+    <LoadingComponent />
+}
+else
+{
+    <div class="@App?.GetContentClass()">
+        <div class="quickgrid-wrapper-sm table-responsive">
+            <QuickGrid Class="h7 table table-striped table-hover align-middle" Items="Entities.AsQueryable()">
+                <PropertyColumn Property="x => x.Title" Title="Title" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.Description" Title="Description" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.Location" Title="Location" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.MeetupLink" Title="MeetupLink" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.Category" Title="Category" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.Capacity" Title="Capacity" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.StartDate" Title="Start" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.StartTime" Title="Start" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.EndDate" Title="End" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.EndTime" Title="End" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.AllDay" Title="AllDay" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.OrganizerId" Title="Description" Align="Align.Center" Sortable="true" />
+                
+                
+                <TemplateColumn Title="Actions" Align="Align.Center">
+                    <a class="me-2" href="event/@context.Id" data-toggle="tooltip" title="View" target="_blank"><i class="bi bi-eye"></i></a>
+                    <a class="me-2" href="event/@context.Id" data-toggle="tooltip" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                    <a class="text-danger" @onclick="() => ShowDelete(context)" title="Remove"><i class="bi bi-trash"></i></a>
+                </TemplateColumn>
+            </QuickGrid>
+            @* <div class="quickgrid-pagination">
+                <Paginator State="PaginationState" />
+            </div> *@
+        </div>
+    </div>
+}
+
+
 
 
 
 @code {
+    #region ---> START PAGE
+    [CascadingParameter] AppState? App { get; set; }
 
+    List<EventDto>? Entities;
+
+    const string Title = "Events";
+
+    bool IsProcessing { get; set; } = true;
+
+    // readonly PaginationState PaginationState = new PaginationState { ItemsPerPage = 15 };
+
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+
+    async Task LoadData()
+    {
+        var result = await Repository.GetAllAsync();
+        if (!result.Success || result.Data is null) return;
+
+        Entities = result.Data;
+        IsProcessing = false;
+        StateHasChanged();
+    }
+    #endregion
+
+    #region ---> DELETE
+    void ShowDelete(EventDto input)
+    {
+        App?.ShowDeleteConfirmation(input.Title, input.Id.ToString(), EventCallback.Factory.Create(this, () => ConfirmDelete(input.Id)));
+    }
+
+    async Task ConfirmDelete(Guid id)
+    {
+        var result = await Repository.DeleteAsync(id);
+        if (result.Success) await LoadData();
+        await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+    }
+    #endregion
 }

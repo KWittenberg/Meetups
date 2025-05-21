@@ -1,0 +1,28 @@
+﻿.sidebar {
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    color: whitesmoke;
+    background-color: rgba(var(--bs-black-rgb), 0.5);
+}
+
+.sidebar-header {
+    cursor: pointer;
+}
+
+.sidebar-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+}
+
+.nav-link {
+    transition: all 0.3s;
+}
+
+    .nav-link:hover {
+        background-color: rgba(255,255,255,0.1);
+    }

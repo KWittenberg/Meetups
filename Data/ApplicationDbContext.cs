@@ -9,7 +9,7 @@ public class ApplicationDbContext : DbContext
     // public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor contextAccessor) : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
 
 
-    public DbSet<Entities.Event>? Events { get; set; } = null!;
+    public DbSet<Entities.Event> Events { get; set; } = null!;
 
 
 

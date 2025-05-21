@@ -1,25 +1,16 @@
-using Meetups.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-// Add Repo and Services
-services.AddInitialServices(configuration);
-services.AddRepositories(configuration);
 
-// services.AddTransient<EventService>();
+// Add Services and Repositories
+services.AddInitialServices(configuration);
+services.AddService(configuration);
+services.AddRepositories(configuration);
 
 
 // Add services to the container.
 services.AddRazorComponents().AddInteractiveServerComponents();
-
-
-// Configure DbContext and DI
-// var connectionString = configuration.GetConnectionString("DevelopmentConnection") ?? throw new InvalidOperationException("Connection string 'DevelopmentConnection' not found!");
-// services.AddDbContextFactory<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-
-
 
 
 
@@ -40,8 +31,7 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 app.Run();
 #endregion

@@ -1,0 +1,156 @@
+﻿@implements IDisposable
+
+@inject NavigationManager NavigationManager
+
+
+<!-- Sidebar -->
+<div class="sidebar" style="width: @(IsOpen ? "170px" : "0");">
+    <div class="sidebar-header p-3 border-bottom border-secondary" @onclick="ToggleAdminMenu">
+        <div class="d-flex align-items-center">
+            <div class="sidebar-icon me-2">
+                <img src="/img/logo s.png" alt="logo" class="img-fluid" />
+                @* <span class="bg-secondary text-dark rounded p-1">TS</span> *@
+            </div>
+            <h5 class="mb-0">Spot</h5>
+        </div>
+    </div>
+
+    <ul class="nav flex-column">
+        @if (ShowAdminMenu)
+        {
+            <li class="nav-item border-bottom">
+                <a class="nav-link text-light py-2 px-3" role="button" aria-expanded="@IsAdminSubmenuOpen" @onclick="ToggleAdminSubmenu">
+                    <i class="bi @(IsAdminSubmenuOpen ? "bi-chevron-down" : "bi-chevron-right") me-2"></i> Admin
+                </a>
+                <div class="@(IsAdminSubmenuOpen ? "show" : "collapse") bg-transparent10" id="adminSubmenu">
+                    <ul class="ms-4 nav flex-column">
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="admin/roles" Match="NavLinkMatch.All">Roles</NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="admin/users" Match="NavLinkMatch.All">Users</NavLink>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        }
+        <li class="nav-item border-bottom">
+            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                <i class="bi bi-house-door-fill me-2"></i> Home
+            </NavLink>
+        </li>
+        <li class="nav-item border-bottom">
+            <NavLink class="nav-link" href="admin" Match="NavLinkMatch.All">
+                <i class="bi bi-columns-gap me-2"></i> Dashboard
+            </NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="admin/contents" Match="NavLinkMatch.All">
+                <i class="bi bi-chevron-right me-2"></i> Contents
+            </NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="admin/playlists" Match="NavLinkMatch.All">
+                <i class="bi bi-chevron-right me-2"></i> Playlists
+            </NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="admin/screens" Match="NavLinkMatch.All">
+                <i class="bi bi-chevron-right me-2"></i> Screens
+            </NavLink>
+        </li>
+
+        <li class="nav-item border-top border-secondary mt-3 p-2">
+            <a class="nav-link text-light py-2 px-3 rounded bg-info bg-opacity-25" data-bs-toggle="collapse" href="#accountSubmenu" role="button" aria-expanded="true">
+                <i class="bi bi-chevron-down me-2"></i> Account
+            </a>
+            <div class="collapse" id="accountSubmenu">
+                <div class="nav flex-column ms-1">
+                    
+                    <AuthorizeView>
+                        <Authorized>
+                            @* <div class="nav-item">
+                                <NavLink class="nav-link" href="Account/Manage">
+                                    <span class="bi bi-person-fill" aria-hidden="true"></span> @context.User.Identity?.Name
+                                </NavLink>
+                            </div> *@
+                            <div class="nav-item px-3">
+                                <form action="Account/Logout" method="post">
+                                    <AntiforgeryToken />
+                                    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                                    <button type="submit" class="nav-link">
+                                        <span class="bi bi-arrow-bar-left" aria-hidden="true"></span> Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </Authorized>
+                        <NotAuthorized>
+                            <div class="nav-item px-3">
+                                <NavLink class="nav-link" href="Account/Register">
+                                    <span class="bi bi-person" aria-hidden="true"></span> Register
+                                </NavLink>
+                            </div>
+                            <div class="nav-item px-3">
+                                <NavLink class="nav-link" href="Account/Login">
+                                    <span class="bi bi-person-badge" aria-hidden="true"></span> Login
+                                </NavLink>
+                            </div>
+                        </NotAuthorized>
+                    </AuthorizeView>
+
+
+
+
+
+
+
+                    @* <li class="nav-item">
+                        <a class="nav-link text-light py-2" href="#">New...</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light py-2" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light py-2" href="#">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light py-2" href="#">Sign out</a>
+                    </li> *@
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+@code {
+    [Parameter] public bool IsOpen { get; set; } = true;
+
+    bool ShowAdminMenu = false;
+    bool IsAdminSubmenuOpen = false;
+
+    void ToggleAdminMenu() => ShowAdminMenu = !ShowAdminMenu;
+    void ToggleAdminSubmenu() => IsAdminSubmenuOpen = !IsAdminSubmenuOpen;
+
+
+
+
+    string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

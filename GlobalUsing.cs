@@ -1,7 +1,11 @@
 ﻿global using Meetups.Data;
 global using Meetups.DTOs;
+global using Meetups.Entities;
 global using Meetups.Enums;
+global using Meetups.Models;
 global using Meetups.Repository;
+global using Meetups.Services;
 global using Meetups.Shared;
+global using Microsoft.AspNetCore.Components;
 global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations;
