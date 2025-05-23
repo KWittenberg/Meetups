@@ -8,10 +8,10 @@
     <div class="sidebar-header p-3 border-bottom border-secondary" @onclick="ToggleAdminMenu">
         <div class="d-flex align-items-center">
             <div class="sidebar-icon me-2">
-                <img src="/img/logo s.png" alt="logo" class="img-fluid" />
+                <img src="/img/logo.png" alt="logo" class="img-fluid" />
                 @* <span class="bg-secondary text-dark rounded p-1">TS</span> *@
             </div>
-            <h5 class="mb-0">Spot</h5>
+            <h5 class="mb-0">Meetups</h5>
         </div>
     </div>
 
@@ -124,7 +124,7 @@
 
 
 @code {
-    [Parameter] public bool IsOpen { get; set; } = true;
+    [Parameter] public bool IsOpen { get; set; } = false;
 
     bool ShowAdminMenu = false;
     bool IsAdminSubmenuOpen = false;

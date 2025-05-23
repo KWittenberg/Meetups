@@ -1,4 +1,6 @@
-﻿namespace Meetups.Repository;
+﻿using Microsoft.AspNetCore.Components.Forms;
+
+namespace Meetups.Repository;
 
 public interface IEventRepository
 {
@@ -13,6 +15,12 @@ public interface IEventRepository
     Task<Result> DeleteAsync(Guid id);
 
 
+    List<string> GetAllCategories();
 
     string ValidateEvent(EventInput input);
+
+
+
+
+    Task<Result<string>> GenerateImagePreviewAsync(IBrowserFile? file);
 }

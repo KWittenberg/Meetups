@@ -44,7 +44,7 @@ public class AppState()
     #endregion
 
     #region Background
-    private Background _background = new Background("Simple Gray", Placeholder.BackgroundUrl);
+    private Background _background = new Background("Solaris", Placeholder.BackgroundUrl);
     public Background Background
     {
         get => _background;
@@ -53,7 +53,7 @@ public class AppState()
 
     public Task<Background?> GetBackground()
     {
-        return Task.FromResult<Background?>(_background ?? new Background("Simple Gray", Placeholder.BackgroundUrl));
+        return Task.FromResult<Background?>(_background ?? new Background("Solaris", Placeholder.BackgroundUrl));
     }
 
     public void SetBackground(Background input)
@@ -64,7 +64,7 @@ public class AppState()
 
     public void DeleteBackground()
     {
-        Background = new Background("Simple Gray", Placeholder.BackgroundUrl);
+        Background = new Background("Solaris", Placeholder.BackgroundUrl);
         // hubContext.Clients.All.SendAsync("BackgroundUpdated", Background);
     }
     #endregion

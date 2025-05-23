@@ -4,22 +4,23 @@ public class Event : BaseAuditableEntity<Guid>
 {
     public Event() { }
 
-    public Event(string title, string? description, string? location, string? meetupLink, string? category, int capacity,
-                DateOnly startDate, TimeOnly startTime, DateOnly endDate, TimeOnly endTime, bool allDay)
+    public Event(string? imageUrl, string title, string? description, string? location, string? meetupLink, string? category, int capacity,
+                DateTime start, DateTime end, bool allDay)
     {
+        ImageUrl = imageUrl;
         Title = title;
         Description = description;
         Location = location;
         MeetupLink = meetupLink;
         Category = category;
         Capacity = capacity;
-        StartDate = startDate;
-        StartTime = startTime;
-        EndDate = endDate;
-        EndTime = endTime;
+        Start = start;
+        End = end;
         AllDay = allDay;
     }
 
+    [StringLength(maximumLength: 200)]
+    public string? ImageUrl { get; set; }
 
     [Required]
     [StringLength(maximumLength: 100)]
@@ -46,11 +47,9 @@ public class Event : BaseAuditableEntity<Guid>
     public int Capacity { get; set; }
 
 
-    public DateOnly StartDate { get; set; }
-    public TimeOnly StartTime { get; set; }
+    public DateTime Start { get; set; }
 
-    public DateOnly EndDate { get; set; }
-    public TimeOnly EndTime { get; set; }
+    public DateTime End { get; set; }
 
 
     public bool AllDay { get; set; }

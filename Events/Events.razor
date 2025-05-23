@@ -2,9 +2,6 @@
 
 @inject IEventRepository Repository
 
-
-
-
 <title>@Title</title>
 
 @* <PageHeader Title="@Title" AddButtonText="Add Screen" AddButtonLink="screen" /> *@
@@ -20,20 +17,24 @@ else
     <div class="@App?.GetContentClass()">
         <div class="quickgrid-wrapper-sm table-responsive">
             <QuickGrid Class="h7 table table-striped table-hover align-middle" Items="Entities.AsQueryable()">
+                <TemplateColumn Title="Image" Align="Align.Center">
+                    <img class="preview-image" src="@context.ImageUrl" alt="Image" />
+                </TemplateColumn>
+
+                <PropertyColumn Property="x => x.Category" Title="Category" Align="Align.Center" Sortable="true" />
                 <PropertyColumn Property="x => x.Title" Title="Title" Align="Align.Center" Sortable="true" />
                 <PropertyColumn Property="x => x.Description" Title="Description" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.Location" Title="Location" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.MeetupLink" Title="MeetupLink" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.Category" Title="Category" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.Start" Title="Start" Align="Align.Center" Sortable="true" />
+                <PropertyColumn Property="x => x.End" Title="End" Align="Align.Center" Sortable="true" />
                 <PropertyColumn Property="x => x.Capacity" Title="Capacity" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.StartDate" Title="Start" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.StartTime" Title="Start" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.EndDate" Title="End" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.EndTime" Title="End" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.AllDay" Title="AllDay" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.OrganizerId" Title="Description" Align="Align.Center" Sortable="true" />
-                
-                
+
+                @if (App!.IsExpanded)
+                {
+                    <PropertyColumn Property="x => x.Location" Title="Location" Align="Align.Center" Sortable="true" />
+                    <PropertyColumn Property="x => x.MeetupLink" Title="MeetupLink" Align="Align.Center" Sortable="true" />
+                    <PropertyColumn Property="x => x.AllDay" Title="AllDay" Align="Align.Center" Sortable="true" />
+                    <PropertyColumn Property="x => x.OrganizerId" Title="Organizer" Align="Align.Center" Sortable="true" />
+                }
                 <TemplateColumn Title="Actions" Align="Align.Center">
                     <a class="me-2" href="event/@context.Id" data-toggle="tooltip" title="View" target="_blank"><i class="bi bi-eye"></i></a>
                     <a class="me-2" href="event/@context.Id" data-toggle="tooltip" title="Edit"><i class="bi bi-pencil-square"></i></a>

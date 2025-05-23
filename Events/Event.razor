@@ -1,4 +1,8 @@
-﻿@page "/event/{id:Guid?}"
+﻿@page "/event/{id:guid?}"
+
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats.Jpeg
+@using SixLabors.ImageSharp.Processing
 
 @inject IEventRepository Repository
 @inject NavigationManager Navigation
@@ -6,57 +10,97 @@
 
 
 <div class="mt-5 @App?.GetContentClass()">
-    <h3>Create Event</h3>
+    <h3>@Title</h3>
 
-    @if (!string.IsNullOrWhiteSpace(ErrorMessage))
-    {
-        <div class="alert alert-danger" role="alert">@ErrorMessage</div>
-    }
+    @* <ErrorMessageComponent ErrorMessage="@ErrorMessage" /> *@
 
-    <EditForm Model="Input" OnValidSubmit="CreateEvent">
+    <EditForm Model="Input" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
-        <ValidationSummary />
+        @* <ValidationSummary /> *@
 
-        <div class="form-group">
-            <label>Title</label>
-            <InputText class="form-control" @bind-Value="@Input.Title" />
-            <ValidationMessage For="() => Input.Title" />
-        </div>
-        <div class="form-group">
-            <label>Description</label>
-            <InputText class="form-control" @bind-Value="@Input.Description" />
-            <ValidationMessage For="() => Input.Description" />
-        </div>
-        <div class="form-group">
-            <label>Location</label>
-            <InputText class="form-control" @bind-Value="@Input.Location" />
-            <ValidationMessage For="() => Input.Location" />
-        </div>
+        <div class="mt-5 row">
+            <div class="col-md-6 col-12">
+                @if (Input?.ImageUrl is null && Input?.ImagePreview is null)
+                {
+                    <div class="form-group">
+                        <label>CoverImage</label>
+                        <InputFile class="form-control" OnChange="HandleImage" />
+                        <ValidationMessage For="() => Input!.CoverImage" />
+                    </div>
+                }
+                else
+                {
+                    <div class="position-relative">
+                        <img src="@(Input.ImagePreview ?? Input.ImageUrl)" alt="Cover Image" class="img-thumbnail" />
+                        <a class="text-danger position-absolute top-0 end-0 icon-delete" @onclick="() => ShowDeleteImage(Input.ImagePreview ?? Input.ImageUrl)" title="Remove Image">
+                            <i class="fs-5 bi bi-x-circle"></i>
+                        </a>
+                    </div>
+                }
 
-        <div class="form-group">
-            <label>StartDate</label>
-            <InputDate class="form-control" @bind-Value="@Input.StartDate" />
-            <ValidationMessage For="() => Input.StartDate" />
-        </div>
-        <div class="form-group">
-            <label>StartTime</label>
-            <input type="time" class="form-control" @bind-value="@Input.StartTime" />
-            <ValidationMessage For="() => Input.StartTime" />
-        </div>
-        <div class="form-group">
-            <label>EndDate</label>
-            <InputDate class="form-control" @bind-Value="@Input.EndDate" />
-            <ValidationMessage For="() => Input.EndDate" />
-        </div>
-        <div class="form-group">
-            <label>EndTime</label>
-            <input type="time" class="form-control" @bind-value="@Input.EndTime" />
-            <ValidationMessage For="() => Input.EndTime" />
-        </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <InputSelect class="form-select" @bind-Value="@Input.Category">
+                        <option value="">Select Category</option>
+                        @foreach (var item in Categories)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => Input.Category" />
+                </div>
 
-        <div class="mt-4 p-0 text-end">
-            <a href="/" class="btn btn-outline-light">Back</a>
-            <button type="submit" class="btn btn-primary w-50">SAVE</button>
+                @if (Input.Category == MeetupCategories.InPerson.ToString())
+                {
+                    <div class="form-group">
+                        <label>Location</label>
+                        <InputText class="form-control" @bind-Value="@Input.Location" />
+                        <ValidationMessage For="() => Input.Location" />
+                    </div>
+                }
+                else if (Input.Category == MeetupCategories.Online.ToString())
+                {
+                    <div class="form-group">
+                        <label>MeetupLink</label>
+                        <InputText class="form-control" @bind-Value="@Input.MeetupLink" />
+                        <ValidationMessage For="() => Input.MeetupLink" />
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-6 col-12">
+                <div class="form-group">
+                    <label>Title</label>
+                    <InputText class="form-control" @bind-Value="@Input.Title" />
+                    <ValidationMessage For="() => Input.Title" />
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <InputText class="form-control" @bind-Value="@Input.Description" />
+                    <ValidationMessage For="() => Input.Description" />
+                </div>
+                <div class="form-group">
+                    <label>Capacity</label>
+                    <InputNumber class="form-control" @bind-Value="@Input.Capacity" />
+                    <ValidationMessage For="() => Input.Capacity" />
+                </div>
+
+                <div class="form-group">
+                    <label>Start</label>
+                    <input type="datetime-local" class="form-control" @bind-value="@Input.Start" />
+                    <ValidationMessage For="() => Input.Start" />
+                </div>
+                <div class="form-group">
+                    <label>End</label>
+                    <input type="datetime-local" class="form-control" @bind-value="@Input.End" />
+                    <ValidationMessage For="() => Input.End" />
+                </div>
+
+                <div class="mt-4 p-0 text-end">
+                    <a href="/" class="btn btn-outline-light" @onclick="HandleDeleteImage">Back</a>
+                    <button type="submit" class="btn btn-primary w-50">SAVE</button>
+                </div>
+            </div>
         </div>
     </EditForm>
 </div>
@@ -67,34 +111,165 @@
 
     [Parameter] public Guid? Id { get; set; }
 
-    EventInput Input { get; set; } = new();
+    List<string> Categories { get; set; } = new();
 
-    string ErrorMessage = string.Empty;
+    EventInput? Input { get; set; } = new();
+
+    // string ErrorMessage = string.Empty;
+
+    string Title => Id is not null ? "Update Event" : "Add Event";
+
+    const int MaxAllowedSize = 5 * 1024 * 1024; // 5 MB
 
 
 
-
-
-    async Task CreateEvent()
+    protected override void OnInitialized()
     {
-        ErrorMessage = Repository.ValidateEvent(Input);
-        if (!string.IsNullOrWhiteSpace(ErrorMessage)) return;
-
-        var result = await Repository.AddAsync(Input);
-        if (result.Success) Navigation.NavigateTo("/");
-        await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+        Categories = Repository.GetAllCategories();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id is null)
+        {
+            Input = new EventInput();
+        }
+        else
+        {
+            var result = await Repository.GetByIdAsync(Id.Value);
+            if (!result.Success || result.Data is null) return;
 
+            Input = result.Data.ToInput();
+
+            // Input = new EventInput()
+            // {
+            //     ImageUrl = Entity.ImageUrl,
+            //     Title = Entity.Title,
+            //     Description = Entity.Description,
+            //     Location = Entity.Location,
+            //     MeetupLink = Entity.MeetupLink,
+            //     Category = Entity.Category,
+            //     Capacity = Entity.Capacity,
+            //     Start = Entity.Start,
+            //     End = Entity.End,
+            //     AllDay = Entity.AllDay,
+            //     OrganizerId = Entity.OrganizerId
+            // };
+        }
+    }
+
+    #region Handle IMAGE
+    async Task HandleImage(InputFileChangeEventArgs e)
+    {
+        var result = await Repository.GenerateImagePreviewAsync(e.File);
+        if (!result.Success)
+        {
+            await App!.ShowToast(result.Message, "error");
+            return;
+        }
+
+        Input!.CoverImage = e.File; // Spremi datoteku za kasnije spremanje
+        Input!.ImagePreview = result.Data; // Postavi base64 string za preview
+        StateHasChanged();
+    }
+    
     async Task HandleValidSubmit()
     {
         ArgumentNullException.ThrowIfNull(Input);
 
         var result = Id is null
             ? await Repository.AddAsync(Input)
-            : await Repository.UpdateAsync((Guid)Id, Input);
+            : await Repository.UpdateAsync(Id.Value, Input);
 
         if (result.Success) Navigation.NavigateTo("/");
         await App!.ShowToast(result.Message, result.Success ? "success" : "error");
     }
+    
+    
+    
+    async Task HandleImageChange(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            IBrowserFile file = e.File;
+            if (file is null)
+            {
+                // ErrorMessage = "Please select a file!";
+                return;
+            }
+
+            if (file.Size > 500 * 1024)
+            {
+                // ErrorMessage = "File size exceeds 500KB!";
+                return;
+            }
+
+            Input.CoverImage = file;
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(Input.CoverImage.Name)}";
+            var filePath = Path.Combine("wwwroot", "img", "events", fileName);
+
+            // Resize the image if needed
+            await using var stream = Input.CoverImage.OpenReadStream();
+            using var image = await SixLabors.ImageSharp.Image.LoadAsync(stream);
+            image.Mutate(x => x.Resize(300, 169));
+
+            await using var fileStream = new FileStream(filePath, FileMode.Create);
+
+            //await image.SaveAsJpegAsync(fileStream);
+            await image.SaveAsync(fileStream, new JpegEncoder());
+            Input.ImageUrl = $"/img/events/{fileName}";
+
+            // ErrorMessage = string.Empty;
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            // ErrorMessage = $"Error processing image: {ex.Message}";
+        }
+    }
+
+    
+
+
+
+
+    async Task HandleDeleteImage()
+    {
+        if (Input.ImageUrl is null) return;
+
+        var filePath = Path.Combine("wwwroot", Input.ImageUrl.TrimStart('/'));
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+            Input.ImageUrl = null;
+            StateHasChanged();
+        }
+    }
+
+    void ShowDeleteImage(string? imageUrl)
+    {
+        if (string.IsNullOrEmpty(imageUrl)) return;
+
+        App?.ShowDeleteConfirmation("Cover Image", imageUrl, EventCallback.Factory.Create(this, () => HandleDeleteImage()));
+    }
+    #endregion
+
+    
+
+
+
+
+
+
+    // async Task CreateEvent()
+    // {
+    //     ErrorMessage = Repository.ValidateEvent(Input);
+    //     if (!string.IsNullOrWhiteSpace(ErrorMessage)) return;
+
+    //     var result = await Repository.AddAsync(Input);
+    //     if (result.Success) Navigation.NavigateTo("/");
+    //     await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+    // }
 }

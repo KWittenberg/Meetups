@@ -4,6 +4,8 @@ public class EventDto
 {
     public Guid Id { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     public string Title { get; set; } = string.Empty;
 
     public string? Description { get; set; }
@@ -17,11 +19,9 @@ public class EventDto
     public int Capacity { get; set; }
 
 
-    public DateOnly StartDate { get; set; }
-    public TimeOnly StartTime { get; set; }
+    public DateTime Start { get; set; }
 
-    public DateOnly EndDate { get; set; }
-    public TimeOnly EndTime { get; set; }
+    public DateTime End { get; set; }
 
 
     public bool AllDay { get; set; }
