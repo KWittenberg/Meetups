@@ -7,5 +7,6 @@ global using Meetups.Repository;
 global using Meetups.Services;
 global using Meetups.Shared;
 global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Forms;
 global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations;

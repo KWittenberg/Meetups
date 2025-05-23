@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
 namespace Meetups.Repository;
@@ -46,7 +45,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
         }
     }
 
-    public async Task<Result> AddAsync(EventInput input)
+    public async Task<Result> AddAsync(ImageData imageData, EventInput input)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
 
@@ -55,9 +54,9 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             var entity = input.ToEntity();
             entity.Id = Guid.NewGuid();
 
-            if (input.CoverImage is not null)
+            if (imageData.FileBytes is not null)
             {
-                var result = await SaveImageAsync(entity.Id, input, false);
+                var result = await SaveImageAsync(entity.Id, input, imageData, false);
                 if (!result.Success) return Result.Error(result.Message);
 
                 entity.ImageUrl = result.Data;
@@ -139,42 +138,67 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
 
 
-    public async Task<Result<string>> GenerateImagePreviewAsync(IBrowserFile? file)
+    public async Task<Result<ImageData>> GenerateImagePreviewAsync(IBrowserFile? file)
     {
-        if (file is null) return Result<string>.Error("No file selected!");
-        if (file.Size <= 0) return Result<string>.Error("Invalid file size!");
-        if (file.Size > MaxAllowedSize) return Result<string>.Error("Image too large! Maximum size is 500KB.");
+        if (file is null) return Result<ImageData>.Error("No file selected!");
+        if (file.Size <= 0) return Result<ImageData>.Error("Invalid file size!");
+        if (file.Size > MaxAllowedSize) return Result<ImageData>.Error("Image too large! Maximum size is 500KB.");
 
         try
         {
             await using var stream = file.OpenReadStream(MaxAllowedSize);
-            using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            var bytes = ms.ToArray();
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
 
-            using var image = Image.Load(bytes);
+            var fileBytes = memoryStream.ToArray();
+            using var image = Image.Load(fileBytes);
+
             var previewImage = image.Clone(ctx => ctx.Resize(new ResizeOptions
             {
                 Mode = ResizeMode.Max,
-                Size = new Size(300, 0)
+                Size = new Size(400, 0)
             }));
+
+            //using var ms = new MemoryStream();
+            //await stream.CopyToAsync(ms);
+            //var bytes = ms.ToArray();
+
+            //using var image = Image.Load(bytes);
+            //var previewImage = image.Clone(ctx => ctx.Resize(new ResizeOptions
+            //{
+            //    Mode = ResizeMode.Max,
+            //    Size = new Size(400, 0)
+            //}));
 
             using var previewStream = new MemoryStream();
             await previewImage.SaveAsJpegAsync(previewStream);
             var imagePreviewBytes = previewStream.ToArray();
             var base64String = $"data:image/jpeg;base64,{Convert.ToBase64String(imagePreviewBytes)}";
 
-            return Result<string>.Ok(base64String);
+            var imageData = new ImageData
+            {
+                FileBytes = fileBytes,
+                ImagePreviewBase64 = base64String,
+                Name = file.Name,
+                Width = image.Width,
+                Height = image.Height,
+                Size = file.Size,
+                FormattedSize = ToFileSizeString(file.Size),
+                ContentType = file.ContentType,
+                LastModified = file.LastModified
+            };
+
+            return Result<ImageData>.Ok(imageData);
         }
         catch (Exception ex)
         {
-            return Result<string>.Error($"Error processing image: {ex.Message}");
+            return Result<ImageData>.Error($"Error processing image: {ex.Message}");
         }
     }
 
-    private async Task<Result<string>> SaveImageAsync(Guid id, EventInput input, bool isOriginal, int sizePx = 600)
+    private async Task<Result<string>> SaveImageAsync(Guid id, EventInput input, ImageData imageData, bool isOriginal, int sizePx = 600)
     {
-        if (input.CoverImage is null) return Result<string>.Error("No image provided!");
+        if (imageData.FileBytes is null) return Result<string>.Error("No image provided!");
 
         try
         {
@@ -184,7 +208,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
                 if (File.Exists(imagePath)) File.Delete(imagePath);
             }
 
-            var extension = Path.GetExtension(input.CoverImage!.Name);
+            var extension = Path.GetExtension(imageData.Name);
             var fileName = $"{id}{extension}";
             var saveFolder = Path.Combine(webHostEnvironment.WebRootPath, EventFolder);
             var filePath = Path.Combine(saveFolder, fileName);
@@ -192,13 +216,11 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
             if (isOriginal)
             {
-                await using var fileStream = new FileStream(filePath, FileMode.Create);
-                await input.CoverImage.OpenReadStream(MaxAllowedSize).CopyToAsync(fileStream);
+                await File.WriteAllBytesAsync(filePath, imageData.FileBytes);
             }
             else
             {
-                await using var stream = input.CoverImage.OpenReadStream(MaxAllowedSize);
-                using var image = await Image.LoadAsync(stream);
+                using var image = Image.Load(imageData.FileBytes);
                 image.Mutate(ctx => ctx.Resize(new ResizeOptions
                 {
                     Mode = ResizeMode.Max,
@@ -221,7 +243,16 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
     }
 
 
-
+    string ToFileSizeString(long bytes)
+    {
+        return bytes switch
+        {
+            < 1024 => $"{bytes} B",
+            < 1_048_576 => $"{bytes / 1024.0:0.##} KB",
+            < 1_073_741_824 => $"{bytes / 1_048_576.0:0.##} MB",
+            _ => $"{bytes / 1_073_741_824.0:0.##} GB"
+        };
+    }
 
 
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-
-namespace Meetups.Repository;
+﻿namespace Meetups.Repository;
 
 public interface IEventRepository
 {
@@ -8,7 +6,7 @@ public interface IEventRepository
 
     Task<Result<EventDto>> GetByIdAsync(Guid id);
 
-    Task<Result> AddAsync(EventInput input);
+    Task<Result> AddAsync(ImageData inputImage, EventInput input);
 
     Task<Result> UpdateAsync(Guid id, EventInput input);
 
@@ -22,5 +20,5 @@ public interface IEventRepository
 
 
 
-    Task<Result<string>> GenerateImagePreviewAsync(IBrowserFile? file);
+    Task<Result<ImageData>> GenerateImagePreviewAsync(IBrowserFile? file);
 }
