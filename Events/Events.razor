@@ -6,8 +6,6 @@
 
 @* <PageHeader Title="@Title" AddButtonText="Add Screen" AddButtonLink="screen" /> *@
 
-<a href="/event" class="btn btn-primary">Add Event</a>
-
 @if (IsProcessing || Entities is null)
 {
     <LoadingComponent />
@@ -23,13 +21,13 @@ else
 
                 <PropertyColumn Property="x => x.Category" Title="Category" Align="Align.Center" Sortable="true" />
                 <PropertyColumn Property="x => x.Title" Title="Title" Align="Align.Center" Sortable="true" />
-                <PropertyColumn Property="x => x.Description" Title="Description" Align="Align.Center" Sortable="true" />
                 <PropertyColumn Property="x => x.Start" Title="Start" Align="Align.Center" Sortable="true" />
                 <PropertyColumn Property="x => x.End" Title="End" Align="Align.Center" Sortable="true" />
                 <PropertyColumn Property="x => x.Capacity" Title="Capacity" Align="Align.Center" Sortable="true" />
 
                 @if (App!.IsExpanded)
                 {
+                    <PropertyColumn Property="x => x.Description" Title="Description" Align="Align.Center" Sortable="true" />
                     <PropertyColumn Property="x => x.Location" Title="Location" Align="Align.Center" Sortable="true" />
                     <PropertyColumn Property="x => x.MeetupLink" Title="MeetupLink" Align="Align.Center" Sortable="true" />
                     <PropertyColumn Property="x => x.AllDay" Title="AllDay" Align="Align.Center" Sortable="true" />
@@ -47,9 +45,6 @@ else
         </div>
     </div>
 }
-
-
-
 
 
 @code {
@@ -89,6 +84,7 @@ else
         var result = await Repository.DeleteAsync(id);
         if (result.Success) await LoadData();
         await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+        StateHasChanged();
     }
     #endregion
 }

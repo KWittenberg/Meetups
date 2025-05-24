@@ -8,9 +8,12 @@ public interface IEventRepository
 
     Task<Result> AddAsync(ImageData inputImage, EventInput input);
 
-    Task<Result> UpdateAsync(Guid id, EventInput input);
+    Task<Result> UpdateAsync(Guid id, EventInput input, ImageData? imageData = null);
 
     Task<Result> DeleteAsync(Guid id);
+
+
+    Task<Result> DeleteImageAsync(Guid id);
 
 
     List<string> GetAllCategories();

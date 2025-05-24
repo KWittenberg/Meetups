@@ -7,15 +7,11 @@
 <div class="mt-5 @App?.GetContentClass()">
     <h3>@Title</h3>
 
-    @* <ErrorMessageComponent ErrorMessage="@ErrorMessage" /> *@
-
     <EditForm Model="Input" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
-        @* <ValidationSummary /> *@
-
         <div class="mt-5 row">
             <div class="col-md-6 col-12">
-                @if (Input?.ImageUrl is null && ImageData?.ImagePreviewBase64 is null)
+                @if (string.IsNullOrWhiteSpace(Input?.ImageUrl) && ImageData?.ImagePreviewBase64 is null)
                 {
                     <div class="upload-area">
                         <label class="upload-label">
@@ -27,20 +23,26 @@
                 else
                 {
                     <div class="position-relative">
-                        <img src="@(ImageData?.ImagePreviewBase64 ?? Input?.ImageUrl)" alt="Cover Image" class="img-fluid" />
-                        <a class="text-danger position-absolute top-0 end-0 icon-delete" @onclick="() => ShowDeleteImage(ImageData?.ImagePreviewBase64 ?? Input?.ImageUrl)" title="Remove Image">
-                            <i class="fs-5 bi bi-x-circle"></i>
-                        </a>
-
                         @if (ImageData is not null)
                         {
+                            <img src="@(ImageData?.ImagePreviewBase64)" alt="Image Preview" class="img-fluid" />
+                            <a class="text-danger position-absolute top-0 end-0 icon-delete" @onclick="DeleteImagePreview" title="Remove Image">
+                                <i class="fs-5 bi bi-x-circle"></i>
+                            </a>
                             <div class="image-info">
-                                Name: <span>@ImageData.Name</span><br />
+                                Name: <span>@ImageData?.Name</span><br />
                                 Dimension: <span>@ImageData?.Width</span> x <span>@ImageData?.Height</span><br />
                                 Size: <span>@ImageData?.FormattedSize</span><br />
                                 Type: <span>@ImageData?.ContentType</span><br />
-                                Last Modified: <span>@ImageData.LastModified</span>
+                                Last Modified: <span>@ImageData?.LastModified</span>
                             </div>
+                        }
+                        else
+                        {
+                            <img src="@(Input?.ImageUrl)" alt="ImageUrl" class="img-fluid" />
+                            <a class="text-danger position-absolute top-0 end-0 icon-delete" @onclick="() => ShowDeleteImage(Id.Value)" title="Remove Image">
+                                <i class="fs-5 bi bi-x-circle"></i>
+                            </a>
                         }
                     </div>
                 }
@@ -126,10 +128,7 @@
 
     ImageData? ImageData { get; set; } = new();
 
-    // string ErrorMessage = string.Empty;
-
     string Title => Id is not null ? "Update Event" : "Add Event";
-
 
 
 
@@ -141,13 +140,16 @@
     protected override async Task OnParametersSetAsync()
     {
         if (Id is null) Input = new EventInput();
-        else
-        {
-            var result = await Repository.GetByIdAsync(Id.Value);
-            if (!result.Success || result.Data is null) return;
+        else await LoadData();
+    }
 
-            Input = result.Data.ToInput();
-        }
+    async Task LoadData()
+    {
+        var result = await Repository.GetByIdAsync(Id.Value);
+        if (!result.Success || result.Data is null) return;
+        Input = result.Data.ToInput();
+        ImageData = null;
+        StateHasChanged();
     }
 
     #region Handle IMAGE
@@ -160,6 +162,25 @@
         StateHasChanged();
     }
 
+    void DeleteImagePreview()
+    {
+        ImageData = null;
+        StateHasChanged();
+    }
+
+    void ShowDeleteImage(Guid id)
+    {
+        App?.ShowDeleteConfirmation("Cover Image", id.ToString(), EventCallback.Factory.Create(this, () => ConfirmDeleteImage(id)));
+    }
+
+    async Task ConfirmDeleteImage(Guid id)
+    {
+        var result = await Repository.DeleteImageAsync(id);
+        if (result.Success) await LoadData();
+        await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+    }
+    #endregion
+
     async Task HandleValidSubmit()
     {
         ArgumentNullException.ThrowIfNull(Input);
@@ -167,139 +188,10 @@
 
         var result = Id is null
             ? await Repository.AddAsync(ImageData, Input)
-            : await Repository.UpdateAsync(Id.Value, Input);
+            : await Repository.UpdateAsync(Id.Value, Input, ImageData);
 
         if (result.Success) Navigation.NavigateTo("/");
         await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+        StateHasChanged();
     }
-    
-    
-    
-    
-    async Task HandleImageOld(InputFileChangeEventArgs e)
-    {
-        try
-        {
-            Console.WriteLine("HandleImageChange: Started");
-            if (e.File == null)
-            {
-                Console.WriteLine("HandleImageChange: No file selected");
-                await App!.ShowToast("Please select a file!", "error");
-                return;
-            }
-
-            Console.WriteLine($"HandleImageChange: File - Name: {e.File.Name}, Size: {e.File.Size}, ContentType: {e.File.ContentType}");
-            var result = await Repository.GenerateImagePreviewAsync(e.File);
-            Console.WriteLine($"HandleImageChange: GenerateImagePreviewAsync returned - Success: {result.Success}, Error: {result.Message}");
-
-            if (!result.Success)
-            {
-                Console.WriteLine("HandleImageChange: Operation failed, returning");
-                await App!.ShowToast(result.Message ?? "Unknown error", "error");
-                return;
-            }
-
-            Console.WriteLine("HandleImageChange: Setting ImageData");
-            ImageData = result.Data;
-            Console.WriteLine($"HandleImageChange: ImageData set - Name: {ImageData?.Name}, FormattedSize: {ImageData?.FormattedSize}");
-            Console.WriteLine("HandleImageChange: Calling StateHasChanged");
-            StateHasChanged();
-            Console.WriteLine("HandleImageChange: Completed successfully");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"HandleImageChange: Exception caught - Message: {ex.Message}, StackTrace: {ex.StackTrace}");
-            await App!.ShowToast($"Error processing image: {ex.Message}", "error");
-        }
-    }
-
-    
-
-
-
-    // async Task HandleImageChange(InputFileChangeEventArgs e)
-    // {
-    //     try
-    //     {
-    //         IBrowserFile file = e.File;
-    //         if (file is null)
-    //         {
-    //             // ErrorMessage = "Please select a file!";
-    //             return;
-    //         }
-
-    //         if (file.Size > 500 * 1024)
-    //         {
-    //             // ErrorMessage = "File size exceeds 500KB!";
-    //             return;
-    //         }
-
-    //         Input.CoverImage = file;
-
-    //         var fileName = $"{Guid.NewGuid()}{Path.GetExtension(Input.CoverImage.Name)}";
-    //         var filePath = Path.Combine("wwwroot", "img", "events", fileName);
-
-    //         // Resize the image if needed
-    //         await using var stream = Input.CoverImage.OpenReadStream();
-    //         using var image = await SixLabors.ImageSharp.Image.LoadAsync(stream);
-    //         image.Mutate(x => x.Resize(300, 169));
-
-    //         await using var fileStream = new FileStream(filePath, FileMode.Create);
-
-    //         //await image.SaveAsJpegAsync(fileStream);
-    //         await image.SaveAsync(fileStream, new JpegEncoder());
-    //         Input.ImageUrl = $"/img/events/{fileName}";
-
-    //         // ErrorMessage = string.Empty;
-
-    //         StateHasChanged();
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         // ErrorMessage = $"Error processing image: {ex.Message}";
-    //     }
-    // }
-
-
-
-
-
-
-    async Task HandleDeleteImage()
-    {
-        if (Input.ImageUrl is null) return;
-
-        var filePath = Path.Combine("wwwroot", Input.ImageUrl.TrimStart('/'));
-        if (File.Exists(filePath))
-        {
-            File.Delete(filePath);
-            Input.ImageUrl = null;
-            StateHasChanged();
-        }
-    }
-
-    void ShowDeleteImage(string? imageUrl)
-    {
-        if (string.IsNullOrEmpty(imageUrl)) return;
-
-        App?.ShowDeleteConfirmation("Cover Image", imageUrl, EventCallback.Factory.Create(this, () => HandleDeleteImage()));
-    }
-    #endregion
-
-
-
-
-
-
-
-
-    // async Task CreateEvent()
-    // {
-    //     ErrorMessage = Repository.ValidateEvent(Input);
-    //     if (!string.IsNullOrWhiteSpace(ErrorMessage)) return;
-
-    //     var result = await Repository.AddAsync(Input);
-    //     if (result.Success) Navigation.NavigateTo("/");
-    //     await App!.ShowToast(result.Message, result.Success ? "success" : "error");
-    // }
 }

@@ -4,10 +4,15 @@
     <AuthorizeView>
         <Authorized>
             <div class="nav-item px-3 d-flex justify-content-center align-content-center">
+                <div>
+                    <a href="/event" class="btn btn-warning btn-sm">Add Event</a>
+                </div>
+                
                 @* @if (App?.CurrentUser is not null)
                 {
                     <h7>Hi @App?.CurrentUser?.FirstName</h7>
                 } *@
+                
                 <form action="Account/Logout" method="post">
                     <AntiforgeryToken />
                     <input type="hidden" name="ReturnUrl" value="#" />

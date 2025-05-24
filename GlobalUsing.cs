@@ -9,4 +9,6 @@ global using Meetups.Shared;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Forms;
 global using Microsoft.EntityFrameworkCore;
+global using SixLabors.ImageSharp;
+global using SixLabors.ImageSharp.Processing;
 global using System.ComponentModel.DataAnnotations;

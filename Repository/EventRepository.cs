@@ -1,11 +1,7 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-
-namespace Meetups.Repository;
+﻿namespace Meetups.Repository;
 
 public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, IWebHostEnvironment webHostEnvironment) : IEventRepository
 {
-    // private const int MaxAllowedSize = 500 * 1024; // 500 KB
     const int MaxAllowedSize = 5 * 1024 * 1024; // 5 MB
 
     static readonly string EventFolder = Path.Combine("img", "events");
@@ -73,7 +69,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
         }
     }
 
-    public async Task<Result> UpdateAsync(Guid id, EventInput input)
+    public async Task<Result> UpdateAsync(Guid id, EventInput input, ImageData? imageData = null)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
 
@@ -83,6 +79,15 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             if (entity is null) return Result.Error("Event not found!");
 
             entity.UpdateFromInput(input);
+
+            if (imageData?.FileBytes is not null)
+            {
+                var result = await SaveImageAsync(id, input, imageData, false);
+                if (!result.Success) return Result.Error(result.Message);
+
+                entity.ImageUrl = result.Data;
+            }
+
             db.Events.Update(entity);
             await db.SaveChangesAsync();
 
@@ -94,13 +99,41 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
         }
     }
 
+    //public async Task<Result> UpdateAsyncOld(Guid id, EventInput input)
+    //{
+    //    await using var db = await dbFactory.CreateDbContextAsync();
+
+    //    try
+    //    {
+    //        var entity = await db.Events.FindAsync(id);
+    //        if (entity is null) return Result.Error("Event not found!");
+
+    //        entity.UpdateFromInput(input);
+    //        db.Events.Update(entity);
+    //        await db.SaveChangesAsync();
+
+    //        return Result.Ok("Event updated!");
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return Result.Error($"Database error: {ex.Message}");
+    //    }
+    //}
+
     public async Task<Result> DeleteAsync(Guid id)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
+
         try
         {
             var entity = await db.Events.FindAsync(id);
             if (entity is null) return Result.Error("Event not found!");
+
+            if (!string.IsNullOrEmpty(entity.ImageUrl))
+            {
+                var filePath = Path.Combine(webHostEnvironment.WebRootPath, entity.ImageUrl.Replace("/", "\\"));
+                if (File.Exists(filePath)) File.Delete(filePath);
+            }
 
             db.Events.Remove(entity);
             await db.SaveChangesAsync();
@@ -113,6 +146,32 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
         }
     }
     #endregion
+
+    public async Task<Result> DeleteImageAsync(Guid id)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+
+        try
+        {
+            var entity = await db.Events.FindAsync(id);
+            if (entity is null) return Result.Error("Event not found!");
+            if (string.IsNullOrWhiteSpace(entity.ImageUrl)) return Result.Error("Event Image - Not found!");
+
+            var filePath = Path.Combine(webHostEnvironment.WebRootPath, entity.ImageUrl.Replace("/", "\\"));
+            if (File.Exists(filePath)) File.Delete(filePath);
+
+            entity.ImageUrl = string.Empty;
+
+            db.Events.Update(entity);
+            await db.SaveChangesAsync();
+
+            return Result.Ok("Event Image deleted!");
+        }
+        catch (Exception ex)
+        {
+            return Result.Error($"Database error: {ex.Message}");
+        }
+    }
 
 
 
@@ -205,7 +264,11 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             if (!string.IsNullOrWhiteSpace(input.ImageUrl))
             {
                 var imagePath = Path.Combine(webHostEnvironment.WebRootPath, input.ImageUrl.Replace("/", "\\"));
-                if (File.Exists(imagePath)) File.Delete(imagePath);
+                // if (File.Exists(imagePath)) File.Delete(imagePath);
+                if (imagePath.StartsWith(Path.Combine(webHostEnvironment.WebRootPath, EventFolder), StringComparison.OrdinalIgnoreCase) && File.Exists(imagePath))
+                {
+                    File.Delete(imagePath);
+                }
             }
 
             var extension = Path.GetExtension(imageData.Name);
@@ -214,10 +277,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             var filePath = Path.Combine(saveFolder, fileName);
             if (!Directory.Exists(saveFolder)) Directory.CreateDirectory(saveFolder);
 
-            if (isOriginal)
-            {
-                await File.WriteAllBytesAsync(filePath, imageData.FileBytes);
-            }
+            if (isOriginal) await File.WriteAllBytesAsync(filePath, imageData.FileBytes);
             else
             {
                 using var image = Image.Load(imageData.FileBytes);
@@ -234,14 +294,13 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             var relativePath = Path.Combine(EventFolder, fileName).Replace("\\", "/");
             input.ImageUrl = relativePath;
 
-            return Result<string>.Ok(relativePath, "ImageSaved");
+            return Result<string>.Ok(relativePath, "Image saved!");
         }
         catch (Exception ex)
         {
             return Result<string>.Error($"Error saving image: {ex.Message}");
         }
     }
-
 
     string ToFileSizeString(long bytes)
     {
