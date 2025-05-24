@@ -2,11 +2,6 @@
 
 public class EventInput
 {
-    //[Required(ErrorMessage = "Please upload an image for the Meetup!")]
-    //public IBrowserFile? CoverImage { get; set; }
-
-    //public string? ImagePreview { get; set; }
-
     [StringLength(maximumLength: 200)]
     public string? ImageUrl { get; set; }
 

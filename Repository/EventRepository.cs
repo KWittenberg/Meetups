@@ -6,6 +6,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
     static readonly string EventFolder = Path.Combine("img", "events");
 
+
     #region CRUD
     public async Task<Result<List<EventDto>>> GetAllAsync()
     {
@@ -98,27 +99,6 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             return Result.Error($"Database error: {ex.Message}");
         }
     }
-
-    //public async Task<Result> UpdateAsyncOld(Guid id, EventInput input)
-    //{
-    //    await using var db = await dbFactory.CreateDbContextAsync();
-
-    //    try
-    //    {
-    //        var entity = await db.Events.FindAsync(id);
-    //        if (entity is null) return Result.Error("Event not found!");
-
-    //        entity.UpdateFromInput(input);
-    //        db.Events.Update(entity);
-    //        await db.SaveChangesAsync();
-
-    //        return Result.Ok("Event updated!");
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return Result.Error($"Database error: {ex.Message}");
-    //    }
-    //}
 
     public async Task<Result> DeleteAsync(Guid id)
     {

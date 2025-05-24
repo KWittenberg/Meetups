@@ -2,12 +2,9 @@
 
 public class ImageData
 {
-    //public IBrowserFile? File { get; set; }
-
     public byte[]? FileBytes { get; set; }
 
     public string? ImagePreviewBase64 { get; set; }
-
 
 
     public string? Name { get; set; }
