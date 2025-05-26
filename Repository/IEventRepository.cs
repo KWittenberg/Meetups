@@ -24,4 +24,9 @@ public interface IEventRepository
 
 
     Task<Result<ImageData>> GenerateImagePreviewAsync(IBrowserFile? file);
+
+
+
+
+    Task<Result<List<EventDto>>> GetEventsAsync(string? filter);
 }

@@ -1,0 +1,59 @@
+﻿@page "/"
+
+@inject IEventRepository Repository
+@inject NavigationManager Navigation
+
+<h4 class="mt-5 text-center text-white">@Title</h4>
+
+@if (IsProcessing || Entities is null)
+{
+    <LoadingComponent />
+}
+else
+{
+    <div class="mt-5 @App?.GetContentClass()">
+        <div class="row g-3">
+            @foreach (var item in Entities)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                    <a href="event/@item.Id">
+                        <div class="card">
+                            <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? Placeholder.ImageUrl : item.ImageUrl)" />
+                            <div class="card-body">
+                                <h6 class="card-title">@item.Title</h6>
+
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+
+@code {
+    [CascadingParameter] AppState? App { get; set; }
+
+    List<EventDto>? Entities;
+
+    const string Title = "Discover Events";
+
+    bool IsProcessing { get; set; } = true;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        var search = queryParams["search"] ?? string.Empty;
+
+        var result = await Repository.GetEventsAsync(search);
+        if (!result.Success || result.Data is null) return;
+
+        Entities = result.Data;
+        IsProcessing = false;
+        StateHasChanged();
+    }
+}

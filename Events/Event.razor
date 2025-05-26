@@ -61,6 +61,7 @@
 
                 @if (Input.Category == MeetupCategories.InPerson.ToString())
                 {
+                    Input.MeetupLink = string.Empty;
                     <div class="form-group">
                         <label>Location</label>
                         <InputText class="form-control" @bind-Value="@Input.Location" />
@@ -69,6 +70,7 @@
                 }
                 else if (Input.Category == MeetupCategories.Online.ToString())
                 {
+                    Input.Location = string.Empty;
                     <div class="form-group">
                         <label>MeetupLink</label>
                         <InputText class="form-control" @bind-Value="@Input.MeetupLink" />
@@ -108,7 +110,7 @@
                 </div>
 
                 <div class="mt-4 p-0 text-end">
-                    <a href="/" class="btn btn-outline-light">Back</a>
+                    <a href="/events" class="btn btn-outline-light">Back</a>
                     <button type="submit" class="btn btn-primary w-50">SAVE</button>
                 </div>
             </div>
@@ -190,7 +192,7 @@
             ? await Repository.AddAsync(ImageData, Input)
             : await Repository.UpdateAsync(Id.Value, Input, ImageData);
 
-        if (result.Success) Navigation.NavigateTo("/");
+        if (result.Success) Navigation.NavigateTo("/events");
         await App!.ShowToast(result.Message, result.Success ? "success" : "error");
         StateHasChanged();
     }

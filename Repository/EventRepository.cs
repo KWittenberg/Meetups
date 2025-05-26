@@ -155,6 +155,9 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
 
 
+
+
+
     public List<string> GetAllCategories() => Enum.GetNames(typeof(MeetupCategories)).ToList();
 
     public string ValidateEvent(EventInput input)
@@ -291,6 +294,44 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             < 1_073_741_824 => $"{bytes / 1_048_576.0:0.##} MB",
             _ => $"{bytes / 1_073_741_824.0:0.##} GB"
         };
+    }
+
+
+    public async Task<Result<List<EventDto>>> GetEventsAsync(string? filter)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+
+        try
+        {
+            //var entities = await db.Events.AsNoTracking()
+            //                                .Where(x => x.Start >= DateTime.Now && (string.IsNullOrEmpty(filter) || x.Title.Contains(filter) || x.Description.Contains(filter) || x.Location.Contains(filter)))
+            //                                .OrderByDescending(x => x.Start)
+            //                                .ToListAsync();
+
+
+
+            var entities = await SearchEvents(filter, db);
+            if (!string.IsNullOrWhiteSpace(filter) && entities.Count == 0)
+            {
+                filter = null;
+                entities = await SearchEvents(filter, db);
+            }
+            if (!entities.Any()) return Result<List<EventDto>>.Error("Event not found!");
+
+            return Result<List<EventDto>>.Ok(entities.ToDtoList());
+        }
+        catch (Exception ex)
+        {
+            return Result<List<EventDto>>.Error($"Error: {ex.Message}");
+        }
+    }
+
+    private static async Task<List<Event>> SearchEvents(string? filter, ApplicationDbContext db)
+    {
+        return await db.Events.AsNoTracking()
+            .Where(x => x.Start >= DateTime.Now && (string.IsNullOrEmpty(filter) || x.Title.Contains(filter) || x.Description.Contains(filter) || x.Location.Contains(filter)))
+            .OrderByDescending(x => x.Start)
+            .ToListAsync();
     }
 
 

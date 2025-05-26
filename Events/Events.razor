@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/events"
 
 @inject IEventRepository Repository
 
@@ -16,7 +16,7 @@ else
         <div class="quickgrid-wrapper-sm table-responsive">
             <QuickGrid Class="h7 table table-striped table-hover align-middle" Items="Entities.AsQueryable()">
                 <TemplateColumn Title="Image" Align="Align.Center">
-                    <img class="preview-image" src="@context.ImageUrl" alt="Image" />
+                    <img class="preview-image" src="@(string.IsNullOrWhiteSpace(context.ImageUrl) ? Placeholder.ImageUrl : context.ImageUrl)" alt="Image" />
                 </TemplateColumn>
 
                 <PropertyColumn Property="x => x.Category" Title="Category" Align="Align.Center" Sortable="true" />

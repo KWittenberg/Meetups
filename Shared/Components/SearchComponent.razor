@@ -1,0 +1,27 @@
+﻿@inject NavigationManager Navigation
+
+<div class="d-flex" role="search">
+    <input @bind-value="@searchQuery"
+           @bind-value:event="oninput"
+           @onkeypress="HandleKeyPress" class="form-control form-control-sm me-2" type="search" placeholder="Search" aria-label="Search"/>
+    <button class="btn @ButtonClass btn-sm" type="button" @onclick="Search">Search</button>
+</div>
+
+
+@code {
+    [Parameter] public string? SearchUrl { get; set; }
+
+    [Parameter] public string? ButtonClass { get; set; } = "btn-outline-light";
+    
+    string searchQuery = string.Empty;
+
+    void Search()
+    {
+        Navigation.NavigateTo($"/{SearchUrl}?search={searchQuery}", forceLoad: true);
+    }
+
+    void HandleKeyPress(KeyboardEventArgs e)
+    {
+        if(e.Key == "Enter") Search();
+    }
+}

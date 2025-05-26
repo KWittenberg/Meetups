@@ -1,5 +1,10 @@
 <div class="top-row">
+    
     <i class="bi @(IsOpen ? "bi-chevron-left" : "bi-list")" @onclick="OnToggleSidebar"></i>
+    
+    
+    <SearchComponent SearchUrl=""/>
+    
 
     <AuthorizeView>
         <Authorized>
