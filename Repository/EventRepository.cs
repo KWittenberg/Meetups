@@ -308,8 +308,6 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             //                                .OrderByDescending(x => x.Start)
             //                                .ToListAsync();
 
-
-
             var entities = await SearchEvents(filter, db);
             if (!string.IsNullOrWhiteSpace(filter) && entities.Count == 0)
             {

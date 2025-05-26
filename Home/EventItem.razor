@@ -1,0 +1,56 @@
+﻿@page "/event/{id:guid}"
+
+@inject IEventRepository Repository
+
+<h4 class="mt-5 text-center text-white">@Title</h4>
+
+@if (IsProcessing || Entity is null)
+{
+    <LoadingComponent />
+}
+else
+{
+    <div class="mt-5 @App?.GetContentClass()">
+        <div class="row">
+            <div class="col-9">
+                <img src="@(string.IsNullOrWhiteSpace(Entity.ImageUrl) ? Placeholder.ImageUrl : Entity.ImageUrl)" alt="Event Image" class="img-fluid" />
+                <pre style="white-space: pre-wrap; word-wrap: break-word;"><strong>Description:</strong> @Entity.Description</pre>
+            </div>
+            <div class="col-3">
+                <h3>@Entity.Title</h3>
+                <p><strong>Category:</strong> @Entity.Category</p>
+                <p><strong>Location:</strong> @Entity.Location</p>
+                <p><strong>Start:</strong> @Entity.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
+                <p><strong>End:</strong> @Entity.End.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
+                <p><strong>Capacity:</strong> @Entity.Capacity</p>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    [CascadingParameter] AppState? App { get; set; }
+
+    [Parameter] public Guid Id { get; set; }
+
+    EventDto? Entity { get; set; } = new();
+
+    string? Title = string.Empty;
+
+    bool IsProcessing { get; set; } = true;
+
+
+
+    protected override async Task OnParametersSetAsync() => await LoadData();
+
+
+    async Task LoadData()
+    {
+        var result = await Repository.GetByIdAsync(Id);
+        if (!result.Success || result.Data is null) return;
+        Entity = result.Data;
+        Title = Entity.Title;
+        IsProcessing = false;
+    }
+}

@@ -1,4 +1,4 @@
-﻿@page "/events"
+﻿@page "/admin/events"
 
 @inject IEventRepository Repository
 
@@ -35,7 +35,7 @@ else
                 }
                 <TemplateColumn Title="Actions" Align="Align.Center">
                     <a class="me-2" href="event/@context.Id" data-toggle="tooltip" title="View" target="_blank"><i class="bi bi-eye"></i></a>
-                    <a class="me-2" href="event/@context.Id" data-toggle="tooltip" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                    <a class="me-2" href="admin/event/@context.Id" data-toggle="tooltip" title="Edit"><i class="bi bi-pencil-square"></i></a>
                     <a class="text-danger" @onclick="() => ShowDelete(context)" title="Remove"><i class="bi bi-trash"></i></a>
                 </TemplateColumn>
             </QuickGrid>

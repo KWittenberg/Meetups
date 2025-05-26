@@ -27,7 +27,7 @@ public class Event : BaseAuditableEntity<Guid>
     public string Title { get; set; } = string.Empty;
 
 
-    [StringLength(maximumLength: 500)]
+    [StringLength(maximumLength: 4000)]
     public string? Description { get; set; }
 
 

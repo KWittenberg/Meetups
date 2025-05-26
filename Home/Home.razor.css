@@ -1,0 +1,20 @@
+﻿a {
+    text-decoration: none;
+}
+
+.card {
+    border: 0;
+    background: transparent;
+}
+
+    .card img {
+        border-radius: 0.5rem;
+    }
+
+    .card .card-body {
+        margin-top: -1rem;
+    }
+
+.card-subtitle {
+    color: black;
+}

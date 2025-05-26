@@ -1,4 +1,4 @@
-﻿@page "/event/{id:guid?}"
+﻿@page "/admin/event/{id:guid?}"
 
 @inject IEventRepository Repository
 @inject NavigationManager Navigation
@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="mt-4 p-0 text-end">
-                    <a href="/events" class="btn btn-outline-light">Back</a>
+                    <a href="/admin/events" class="btn btn-outline-light">Back</a>
                     <button type="submit" class="btn btn-primary w-50">SAVE</button>
                 </div>
             </div>
@@ -192,7 +192,7 @@
             ? await Repository.AddAsync(ImageData, Input)
             : await Repository.UpdateAsync(Id.Value, Input, ImageData);
 
-        if (result.Success) Navigation.NavigateTo("/events");
+        if (result.Success) Navigation.NavigateTo("/admin/events");
         await App!.ShowToast(result.Message, result.Success ? "success" : "error");
         StateHasChanged();
     }
