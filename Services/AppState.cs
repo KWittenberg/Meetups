@@ -71,7 +71,17 @@ public class AppState()
 
 
 
+    #region Footer
+    public RenderFragment? FooterContent { get; set; } = null!;
 
+    public Action? OnFooterContentChanged { get; set; }
+
+    public void SetFooterContent(RenderFragment? content)
+    {
+        FooterContent = content;
+        OnFooterContentChanged?.Invoke();
+    }
+    #endregion
 
 
     #region Toast

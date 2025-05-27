@@ -14,7 +14,9 @@ else
         <div class="row">
             <div class="col-9">
                 <img src="@(string.IsNullOrWhiteSpace(Entity.ImageUrl) ? Placeholder.ImageUrl : Entity.ImageUrl)" alt="Event Image" class="img-fluid" />
-                <pre style="white-space: pre-wrap; word-wrap: break-word;"><strong>Description:</strong> @Entity.Description</pre>
+                <div style="padding-bottom: 100px;">
+                    <pre style="white-space: pre-wrap; word-wrap: break-word;"><strong>Description:</strong> @Entity.Description</pre>
+                </div>
             </div>
             <div class="col-3">
                 <h3>@Entity.Title</h3>
@@ -42,7 +44,11 @@ else
 
 
 
-    protected override async Task OnParametersSetAsync() => await LoadData();
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadData();
+        SetFooter();
+    }
 
 
     async Task LoadData()
@@ -52,5 +58,10 @@ else
         Entity = result.Data;
         Title = Entity.Title;
         IsProcessing = false;
+    }
+
+    void SetFooter()
+    {
+        App?.SetFooterContent(@<FooterComponent Event="Entity"/>);
     }
 }

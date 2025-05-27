@@ -1,0 +1,48 @@
+﻿@if (Event is not null)
+{
+    <footer>
+        <div class="container-fluid bg-transparent20 text-white position-absolute bottom-0 w-100">
+            <div class="container d-flex align-items-center">
+                <div class="container">
+                    <p><strong>@Event?.Title</strong></p>
+                    <p><strong>Start:</strong> @Event?.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
+                </div>
+                <div class="container text-end">
+                    <button class="btn btn-outline-light" @onclick="Attend">Attend</button>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </footer>
+
+    <DialogXComponent Title="Sign up to attend this event" @ref="Dialog">
+        <DialogBody>
+            <p>To attend this event, please sign up with your email address.</p>
+            <EditForm Model="Event" OnValidSubmit="Attend">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <InputText id="email" class="form-control" @bind-Value="Event.Title" required />
+                    <ValidationMessage For="@(() => Event.Title)" />
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </EditForm>
+        </DialogBody>
+    </DialogXComponent>
+}
+
+
+@code {
+    [Parameter] public EventDto? Event { get; set; } = new();
+
+    DialogXComponent? Dialog { get; set; } = new();
+
+    void Attend()
+    {
+        Dialog?.Show();
+    }
+}
