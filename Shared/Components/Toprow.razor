@@ -5,18 +5,18 @@
     
     <SearchComponent SearchUrl=""/>
     
-
-    <AuthorizeView>
+    <LoginStatusComponent />
+    @* <AuthorizeView>
         <Authorized>
             <div class="nav-item px-3 d-flex justify-content-center align-content-center">
                 <div>
                     <a href="/admin/event" class="btn btn-warning btn-sm">Add Event</a>
                 </div>
                 
-                @* @if (App?.CurrentUser is not null)
+                @if (App?.CurrentUser is not null)
                 {
                     <h7>Hi @App?.CurrentUser?.FirstName</h7>
-                } *@
+                } 
                 
                 <form action="Account/Logout" method="post">
                     <AntiforgeryToken />
@@ -27,7 +27,7 @@
                 </form>
             </div>
         </Authorized>
-    </AuthorizeView>
+    </AuthorizeView> *@
     
     @* <a href="#" target="_blank">About</a> *@
 </div>

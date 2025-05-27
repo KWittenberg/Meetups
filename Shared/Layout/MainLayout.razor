@@ -39,7 +39,7 @@
     
     protected override void OnInitialized() => App.OnFooterContentChanged += UpdateFooterContentChanged;
 
-    async void UpdateFooterContentChanged() => await InvokeAsync(StateHasChanged);
+    void UpdateFooterContentChanged() => InvokeAsync(StateHasChanged);
     
     public void Dispose() => App.OnFooterContentChanged -= UpdateFooterContentChanged;
 }

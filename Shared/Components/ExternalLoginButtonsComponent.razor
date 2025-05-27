@@ -1,0 +1,38 @@
+﻿@inject IAuthenticationSchemeProvider AuthenticationSchemeProvider
+@inject NavigationManager Navigation
+
+
+<div class="container">
+    @if (ExternalLoginProviders is not null)
+    {
+        foreach (var provider in ExternalLoginProviders)
+        {
+            @if (!string.IsNullOrWhiteSpace(provider.DisplayName))
+            {
+                <button type="button" class="btn btn-primary" @onclick="() => LoginWithExternalProviders(provider.Name)">
+                    Login with @provider.DisplayName
+                </button>
+            }
+        }
+    }
+</div>
+
+
+@code {
+    
+    IEnumerable<AuthenticationScheme>? ExternalLoginProviders;
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        ExternalLoginProviders = await AuthenticationSchemeProvider.GetAllSchemesAsync();
+    }
+
+    void LoginWithExternalProviders(string providerName)
+    {
+        // var redirectUrl = "/signin-callback";
+
+        //Navigation.NavigateTo($"authentication/{providerName}?redirectUri={Uri.EscapeDataString(redirectUrl)}", true);
+        Navigation.NavigateTo($"authentication/{providerName}", true);
+    }
+}

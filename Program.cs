@@ -31,7 +31,12 @@ app.UseStaticFiles();
 
 app.UseAntiforgery();
 
+app.UseAuthentication();
+
 app.MapStaticAssets();
+
+app.MapEndpoints();
+
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 app.Run();

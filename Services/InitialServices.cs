@@ -1,4 +1,7 @@
-﻿namespace Meetups.Services;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+
+namespace Meetups.Services;
 
 public static class InitialServices
 {
@@ -14,8 +17,19 @@ public static class InitialServices
         // services.AddDbContextFactory<ApplicationDbContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
 
 
-
-
+        // Add Google Authentication
+        services.AddAuthentication(options =>
+        {
+            options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddGoogle(options =>
+            {
+                options.ClientId = configuration["Google:ClientId"] ?? throw new InvalidOperationException("Google ClientId not found in configuration.");
+                options.ClientSecret = configuration["Google:ClientSecret"] ?? throw new InvalidOperationException("Google ClientSecret not found in configuration.");
+            });
 
 
         //services.AddCascadingAuthenticationState();

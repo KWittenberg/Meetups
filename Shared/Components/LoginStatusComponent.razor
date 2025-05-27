@@ -1,0 +1,58 @@
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+
+
+@if (IsAuthenticated)
+{
+    <div class="d-flex justify-content-center align-items-center">
+        <span class="text-black me-2">Hi, @UserName</span>
+        <a class="nav-link text-light btn btn-link" @onclick="Logout">Logout</a>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-center align-items-center">
+        <a class="nav-link text-light btn btn-link" @onclick="Login">Login</a>
+    </div>
+}
+
+
+<DialogXComponent Title="Login" @ref="LoginDialog">
+    <DialogBody>
+        <ExternalLoginButtonsComponent />
+    </DialogBody>
+</DialogXComponent>
+
+@code {
+    AuthenticationState? AuthenticationState;
+
+    bool IsAuthenticated = false;
+    //bool IsAuthenticated => AuthenticationState?.User.Identity?.IsAuthenticated ?? false;
+
+    string? UserName = string.Empty;
+
+    DialogXComponent? LoginDialog { get; set; } = new();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        var user = AuthenticationState?.User;
+
+        IsAuthenticated = user?.Identity?.IsAuthenticated ?? false;
+        UserName = IsAuthenticated ? user?.Identity?.Name : "Guest";
+    }
+
+    void Login()
+    {
+        if (IsAuthenticated == false) LoginDialog?.Show();
+    }
+
+    void Logout()
+    {
+        Navigation.NavigateTo("/logout", true);
+    }
+}
