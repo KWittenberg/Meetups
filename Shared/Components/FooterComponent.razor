@@ -1,16 +1,19 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IRsvpRepository RsvpRepository
 @inject AppState App
+@inject NavigationManager Navigation
 
 @if (Event is not null)
 {
     <footer>
         <div class="container-fluid bg-transparent20 text-white position-absolute bottom-0 w-100">
-            <div class="container d-flex align-items-center">
+            <div class="d-flex justify-content-between align-items-center">
                 <div class="container">
                     <p><strong>@Event?.Title</strong></p>
                     <p><strong>Start:</strong> @Event?.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
                 </div>
-                <div class="container text-end">
+                <div style="color: red;">@ErrorMessage</div>
+                <div class="ms-3 container text-end">
                     <button class="btn btn-outline-light" @onclick="Attend">Attend</button>
                 </div>
             </div>
@@ -22,6 +25,8 @@
             <ExternalLoginButtonsComponent />
         </DialogBody>
     </DialogXComponent>
+
+    <ConfirmDialogComponent @ref="ConfirmDialog" />
 }
 
 
@@ -31,8 +36,15 @@
     [Parameter] public EventDto? Event { get; set; } = new();
 
     DialogXComponent? Dialog { get; set; } = new();
+    ConfirmDialogComponent? ConfirmDialog { get; set; } = new();
 
     AuthenticationState? AuthenticationState;
+
+    string? ErrorMessage;
+
+
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,7 +60,23 @@
         else
         {
             // await App!.ShowToast("You are already logged in.", "error");
-            await App!.ShowConfirmation("You are already logged in.", "error");
+            // await App!.ShowConfirmation("You are already logged in.", "error");
+
+            ConfirmDialog?.Show("Are You sure you want to RSVP for this event?", async () =>
+            {
+                var email = AuthenticationState?.User.FindFirst(x => x.Type == ClaimTypes.Email)?.Value;
+
+                var result = await RsvpRepository.AddAsync(email, Event!.Id);
+                if (result.Success) Navigation.NavigateTo($"/event/{Event.Id}");
+                else 
+                {
+                    ErrorMessage = result.Message;
+                    StateHasChanged();
+                }
+                await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+            });
         }
     }
+
+
 }

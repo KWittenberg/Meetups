@@ -6,7 +6,7 @@
 @if (IsAuthenticated)
 {
     <div class="d-flex justify-content-center align-items-center">
-        <span class="text-black me-2">Hi, @UserName</span>
+        <span class="text-black me-2">Hi, <a href="/manage-user/DFCCBAFE-52D1-40AC-D6EE-08DD9E29ECA2">@UserName</a></span>
         <a class="nav-link text-light btn btn-link" @onclick="Logout">Logout</a>
     </div>
 }
@@ -31,6 +31,7 @@ else
     //bool IsAuthenticated => AuthenticationState?.User.Identity?.IsAuthenticated ?? false;
 
     string? UserName = string.Empty;
+    Guid UserId = Guid.Empty;
 
     DialogXComponent? LoginDialog { get; set; } = new();
 
@@ -44,6 +45,7 @@ else
 
         IsAuthenticated = user?.Identity?.IsAuthenticated ?? false;
         UserName = IsAuthenticated ? user?.Identity?.Name : "Guest";
+        // UserId = IsAuthenticated ? Guid.Parse(user?.FindFirst("sub")?.Value ?? Guid.Empty.ToString()) : Guid.Empty;
     }
 
     void Login()

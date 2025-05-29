@@ -7,6 +7,8 @@ public static class ConfigureRepositories
 
         services.AddScoped<IEventRepository, EventRepository>();
 
+        services.AddScoped<IRsvpRepository, RsvpRepository>();
+
 
 
         return services;

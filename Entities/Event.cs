@@ -54,5 +54,11 @@ public class Event : BaseAuditableEntity<Guid>
 
     public bool AllDay { get; set; }
 
+    public Recurrence Recurrence { get; set; } = Recurrence.OneTime;
+
     public Guid? OrganizerId { get; set; }
+
+
+
+    public List<Rsvp> Rsvps { get; set; } = new();
 }

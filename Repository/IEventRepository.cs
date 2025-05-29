@@ -29,4 +29,10 @@ public interface IEventRepository
 
 
     Task<Result<List<EventDto>>> GetEventsAsync(string? filter);
+
+
+
+
+
+    Task<Result<List<UserDto>>> GetAttendeesByEventIdAsync(Guid id);
 }

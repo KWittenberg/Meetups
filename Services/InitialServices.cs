@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-
-namespace Meetups.Services;
+﻿namespace Meetups.Services;
 
 public static class InitialServices
 {
@@ -29,6 +26,20 @@ public static class InitialServices
             {
                 options.ClientId = configuration["Google:ClientId"] ?? throw new InvalidOperationException("Google ClientId not found in configuration.");
                 options.ClientSecret = configuration["Google:ClientSecret"] ?? throw new InvalidOperationException("Google ClientSecret not found in configuration.");
+
+                options.Events = new OAuthEvents
+                {
+                    OnTicketReceived = async context =>
+                    {
+                        if (context.Principal is not null)
+                        {
+                            await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, context.Principal, context.Properties);
+                            context.Response.Redirect("/signin-callback");
+                            context.HandleResponse(); // Suppress the default response
+                        }
+                    }
+                };
+
             });
 
 

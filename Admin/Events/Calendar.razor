@@ -1,4 +1,4 @@
-﻿@page "/admin/events"
+﻿@page "/admin/cal"
 
 @inject IEventRepository Repository
 @inject IJSRuntime JsRuntime
@@ -14,7 +14,7 @@
 else
 {
     <div class="@App?.GetContentClass()">
-        <div class="quickgrid-wrapper-sm table-responsive">
+        @* <div class="quickgrid-wrapper-sm table-responsive">
             <QuickGrid Class="h7 table table-striped table-hover align-middle" Items="Entities.AsQueryable()">
                 <TemplateColumn Title="Image" Align="Align.Center">
                     <img class="preview-image" src="@(string.IsNullOrWhiteSpace(context.ImageUrl) ? Placeholder.ImageUrl : context.ImageUrl)" alt="Image" />
@@ -40,14 +40,12 @@ else
                     <a class="text-danger" @onclick="() => ShowDelete(context)" title="Remove"><i class="bi bi-trash"></i></a>
                 </TemplateColumn>
             </QuickGrid>
-            @* <div class="quickgrid-pagination">
-                <Paginator State="PaginationState" />
-            </div> *@
-        </div>
+                    </div> *@
 
 
         <!-- FullCalendar -->
-        <div id="calendar" style="max-width: 900px; margin: 0 auto; margin-top: 20px;"></div>
+        <div id="calendar" class="mt-5"></div>
+        @* <div id="calendar" style="max-width: 900px; margin: 0 auto; margin-top: 20px;"></div> *@
     </div>
 }
 
@@ -58,11 +56,11 @@ else
 
     List<EventDto>? Entities;
 
-    const string Title = "Events";
+    const string Title = "Calendar";
 
     bool IsProcessing { get; set; } = true;
 
-    // readonly PaginationState PaginationState = new PaginationState { ItemsPerPage = 15 };
+
 
 
     protected override async Task OnInitializedAsync() => await LoadData();
@@ -76,33 +74,18 @@ else
         IsProcessing = false;
         StateHasChanged();
 
-        if (Entities != null && Entities.Any()) await InitializeCalendar2();
+        if (Entities is not null && Entities.Any()) await InitializeCalendar();
     }
 
     async Task InitializeCalendar()
     {
-        var calendarEvents = new[]
-        {
-            new { title = "Test Event", start = "2025-05-28T11:00:00", end = "2025-05-28T12:00:00" }
-        };
+        if (Entities is null) return;
 
-        await JsRuntime.InvokeVoidAsync("initializeCalendar", "calendar", new
-        {
-            initialView = "dayGridMonth",
-            events = calendarEvents
-        });
-    }
-    
-    async Task InitializeCalendar2()
-    {
-        if (Entities == null) return;
-
-        // Pretvori EventDto u format koji FullCalendar razumije
         var calendarEvents = Entities.Select(e => new
         {
             title = e.Title,
             start = e.Start.ToString("yyyy-MM-ddTHH:mm:ss"),
-            end = e.End.ToString("yyyy-MM-ddTHH:mm:ss") // ? jer End može biti null
+            end = e.End.ToString("yyyy-MM-ddTHH:mm:ss")
         }).ToList();
 
         await JsRuntime.InvokeVoidAsync("initializeCalendar", "calendar", new

@@ -27,4 +27,8 @@ public class EventDto
     public bool AllDay { get; set; }
 
     public Guid? OrganizerId { get; set; }
+
+
+
+    public List<RsvpDto> Rsvps { get; set; } = new();
 }

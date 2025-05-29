@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 @inject AppState App
-@implements IDisposable
+
 
 
 <page class="background" data-bs-theme="dark" style="background-image: url('@(string.IsNullOrEmpty(App.Background?.ImageUrl) ? Placeholder.BackgroundUrl : App.Background?.ImageUrl)')">
@@ -20,7 +20,7 @@
     </CascadingValue>
 </page>
 
-<div>@App.FooterContent</div>
+@* <div>@App.FooterContent</div> *@
 
 
 <div id="blazor-error-ui" data-nosnippet>
@@ -37,9 +37,9 @@
     void ToggleSidebar() => IsSidebarOpen = !IsSidebarOpen;
 
     
-    protected override void OnInitialized() => App.OnFooterContentChanged += UpdateFooterContentChanged;
+    // protected override void OnInitialized() => App.OnFooterContentChanged += UpdateFooterContentChanged;
 
-    void UpdateFooterContentChanged() => InvokeAsync(StateHasChanged);
+    // void UpdateFooterContentChanged() => InvokeAsync(StateHasChanged);
     
-    public void Dispose() => App.OnFooterContentChanged -= UpdateFooterContentChanged;
+    // public void Dispose() => App.OnFooterContentChanged -= UpdateFooterContentChanged;
 }

@@ -32,6 +32,7 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapStaticAssets();
 

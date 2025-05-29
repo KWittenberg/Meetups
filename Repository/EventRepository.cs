@@ -334,6 +334,32 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
 
 
+
+
+    public async Task<Result<List<UserDto>>> GetAttendeesByEventIdAsync(Guid id)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+
+        try
+        {
+            var entities = await db.Rsvps.AsNoTracking()
+                                            .Include(x => x.User)
+                                            .Where(x => x.EventId == id && x.Status == "Going")
+                                            .Select(x => x.User)
+                                            .ToListAsync();
+
+            if (!entities.Any()) return Result<List<UserDto>>.Error("Attendees not found!");
+
+            return Result<List<UserDto>>.Ok(entities.ToDtoList());
+        }
+        catch (Exception ex)
+        {
+            return Result<List<UserDto>>.Error($"Error: {ex.Message}");
+        }
+    }
+
+
+
     #region OLD
     public async Task<Result<List<EventDto>>> GetAllAsyncOld()
     {

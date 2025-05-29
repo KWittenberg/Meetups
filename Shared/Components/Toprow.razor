@@ -5,13 +5,16 @@
     
     <SearchComponent SearchUrl=""/>
     
+    
+    <div>
+        <a href="/admin/event" class="btn btn-warning btn-sm">Add Event</a>
+    </div>
+    
     <LoginStatusComponent />
     @* <AuthorizeView>
         <Authorized>
             <div class="nav-item px-3 d-flex justify-content-center align-content-center">
-                <div>
-                    <a href="/admin/event" class="btn btn-warning btn-sm">Add Event</a>
-                </div>
+                
                 
                 @if (App?.CurrentUser is not null)
                 {

@@ -11,10 +11,24 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Event> Events { get; set; } = null!;
 
+    public DbSet<User> Users { get; set; } = null!;
+
+    public DbSet<Rsvp> Rsvps { get; set; } = null!;
+
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Rsvp>().HasOne(x => x.User).WithMany(x => x.Rsvps).HasForeignKey(x => x.UserId);
+
+        modelBuilder.Entity<Rsvp>().HasOne(x => x.Event).WithMany(x => x.Rsvps).HasForeignKey(x => x.EventId);
+
+
+
+
+
+
         base.OnModelCreating(modelBuilder);
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }

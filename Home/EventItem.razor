@@ -1,6 +1,10 @@
 ﻿@page "/event/{id:guid}"
 
+@inject IRsvpRepository RsvpRepository
 @inject IEventRepository Repository
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
 
 <h4 class="mt-5 text-center text-white">@Title</h4>
 
@@ -17,17 +21,57 @@ else
                 <div style="padding-bottom: 100px;">
                     <pre style="white-space: pre-wrap; word-wrap: break-word;"><strong>Description:</strong> @Entity.Description</pre>
                 </div>
+                <div class="my-3 bg-transparent20">
+                    <h5 class="mt-5 text-white text-center">Attendees</h5>
+                    <AttendeesComponent Users="Attendees" />
+                </div>
+
             </div>
-            <div class="col-3">
-                <h3>@Entity.Title</h3>
-                <p><strong>Category:</strong> @Entity.Category</p>
-                <p><strong>Location:</strong> @Entity.Location</p>
-                <p><strong>Start:</strong> @Entity.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
-                <p><strong>End:</strong> @Entity.End.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
-                <p><strong>Capacity:</strong> @Entity.Capacity</p>
+            <div class="col-3 bg-transparent10">
+                
+                <div class="my-3 text-center">
+                    <h4 class="mt-5 text-white">@Entity.Title</h4>
+                    <button class="mt-3 btn btn-outline-light w-100" @onclick="Attend">Attend</button>
+                </div>
+
+                <div class="p-2 text-white">
+                    <p><strong>Category:</strong> @Entity.Category</p>
+                    <p><strong>Location:</strong> @Entity.Location</p>
+                    <p><strong>Start:</strong> @Entity.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
+                    <p><strong>End:</strong> @Entity.End.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
+                    <p>
+                        <strong>Capacity:</strong>
+                        @if (Entity.Capacity == 0)
+                        {
+                            <span class="text-black"> Unlimited</span>
+                        }
+                        else if (Entity.Capacity > 0 && Entity.Capacity < 10)
+                        {
+                            <span class="text-warning"> @Entity.Capacity</span>
+                        }
+                        else
+                        {
+                            <span class="text-white"> @Entity.Capacity</span>
+                        }
+                    </p>
+                </div>
+                <div class="my-3">
+                    <h5 class="mt-5 text-white text-center">Attendees</h5>
+                    <AttendeesComponent Users="Attendees" />
+                </div>
+
             </div>
         </div>
     </div>
+
+
+    <DialogXComponent Title="Sign up to attend this event" @ref="Dialog">
+        <DialogBody>
+            <ExternalLoginButtonsComponent />
+        </DialogBody>
+    </DialogXComponent>
+
+    <ConfirmDialogComponent @ref="ConfirmDialog" />
 }
 
 
@@ -38,16 +82,25 @@ else
 
     EventDto? Entity { get; set; } = new();
 
+    List<UserDto> Attendees { get; set; } = new();
+
     string? Title = string.Empty;
 
     bool IsProcessing { get; set; } = true;
 
+    AuthenticationState? AuthenticationState;
 
+    DialogXComponent? Dialog { get; set; } = new();
+    ConfirmDialogComponent? ConfirmDialog { get; set; } = new();
+
+
+
+    protected override async Task OnInitializedAsync() => AuthenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
     protected override async Task OnParametersSetAsync()
     {
         await LoadData();
-        SetFooter();
+        // SetFooter();
     }
 
 
@@ -55,13 +108,48 @@ else
     {
         var result = await Repository.GetByIdAsync(Id);
         if (!result.Success || result.Data is null) return;
+
         Entity = result.Data;
         Title = Entity.Title;
+        
+        var attendees = await Repository.GetAttendeesByEventIdAsync(Id);
+        Attendees = attendees?.Data!;
+        
         IsProcessing = false;
     }
 
-    void SetFooter()
+    // void SetFooter()
+    // {
+    //     App?.SetFooterContent(@<FooterComponent Event="Entity"/>);
+    // }
+
+
+
+
+
+    async Task Attend()
     {
-        App?.SetFooterContent(@<FooterComponent Event="Entity"/>);
+        if (AuthenticationState is not null && AuthenticationState?.User.Identity?.IsAuthenticated == false)
+        {
+            Dialog?.Show();
+        }
+        else
+        {
+            // await App!.ShowToast("You are already logged in.", "error");
+            // await App!.ShowConfirmation("You are already logged in.", "error");
+
+            ConfirmDialog?.Show("Are You sure you want to RSVP for this event?", async () =>
+            {
+                var email = AuthenticationState?.User.FindFirst(x => x.Type == ClaimTypes.Email)?.Value;
+
+                var result = await RsvpRepository.AddAsync(email, Entity!.Id);
+                if (result.Success) Navigation.NavigateTo($"/event/{Entity.Id}", true);
+                else
+                {
+                    StateHasChanged();
+                }
+                await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+            });
+        }
     }
 }

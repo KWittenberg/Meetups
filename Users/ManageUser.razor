@@ -1,0 +1,40 @@
+﻿@page "/manage-user/{id:guid}"
+
+@attribute [Authorize]
+
+
+<h4 class="mt-5 text-center text-white">@Title</h4>
+
+@if (IsProcessing || Entity is null)
+{
+    <LoadingComponent />
+}
+else
+{
+    <div class="mt-5 @App?.GetContentClass()">
+        
+        <div class="border p-3 mb-3 d-flex align-items-center">
+            <div class="me-3">
+                @* <img src="@(string.IsNullOrWhiteSpace(Entity.ImageUrl) ? Placeholder.ImageUrl : Entity.ImageUrl)" alt="User Image" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" /> *@
+            </div>
+            
+            <div class="flex-grow-1">
+                <h5></h5>
+            </div>
+
+        </div>
+    </div>
+}
+
+
+@code {
+    [CascadingParameter] AppState? App { get; set; }
+
+    [Parameter] public Guid Id { get; set; }
+
+    UserDto? Entity;
+
+    string? Title = "Manage User";
+
+    bool IsProcessing { get; set; } = true;
+}
