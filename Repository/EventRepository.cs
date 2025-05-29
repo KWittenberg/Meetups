@@ -336,6 +336,28 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
 
 
+    public async Task<Result<List<EventDto>>> GetUserRsvpEventsAsync(Guid userId)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+
+        try
+        {
+            var entities = await db.Events.Include(x => x.Rsvps)
+                .AsNoTracking()
+                .Where(x => x.Rsvps.Any(x => x.UserId == userId))
+                .ToListAsync();
+
+            if (!entities.Any()) return Result<List<EventDto>>.Error("Event not found!");
+
+            return Result<List<EventDto>>.Ok(entities.ToDtoList());
+        }
+        catch (Exception ex)
+        {
+            return Result<List<EventDto>>.Error($"Error: {ex.Message}");
+        }
+    }
+
+
     public async Task<Result<List<UserDto>>> GetAttendeesByEventIdAsync(Guid id)
     {
         await using var db = await dbFactory.CreateDbContextAsync();

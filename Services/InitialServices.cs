@@ -33,7 +33,8 @@ public static class InitialServices
                     {
                         if (context.Principal is not null)
                         {
-                            await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, context.Principal, context.Properties);
+                            await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, context.Principal);
+                            //await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, context.Principal, context.Properties);
                             context.Response.Redirect("/signin-callback");
                             context.HandleResponse(); // Suppress the default response
                         }
@@ -41,6 +42,32 @@ public static class InitialServices
                 };
 
             });
+
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("SameUserPolicy", policy =>
+            {
+                policy.RequireAssertion(context =>
+                {
+                    var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    if (Guid.TryParse(userIdClaim, out var authenticatedUserId))
+                    {
+                        var routeData = context.Resource as HttpContext;
+                        if (routeData is not null)
+                        {
+                            var routeUserId = routeData.Request.RouteValues["userId"]?.ToString();
+                            if (Guid.TryParse(routeUserId, out var userId))
+                            {
+                                return authenticatedUserId == userId;
+                            }
+                        }
+                    }
+
+                    return false;
+                });
+            });
+        });
 
 
         //services.AddCascadingAuthenticationState();

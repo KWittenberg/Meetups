@@ -39,14 +39,24 @@ public static class Endpoints
                     dbContext.Users.Add(user);
                     await dbContext.SaveChangesAsync();
                 }
-                else
+                else if (existingUser.Name != nameClaim.Value)
                 {
-                    if (existingUser.Name != nameClaim.Value)
-                    {
-                        existingUser.Name = nameClaim.Value;
-                        await dbContext.SaveChangesAsync();
-                    }
+                    existingUser.Name = nameClaim.Value;
+                    await dbContext.SaveChangesAsync();
                 }
+
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString()),
+                    new Claim(ClaimTypes.Name, existingUser.Name),
+                    new Claim(ClaimTypes.Email, existingUser.Email)
+                    // new Claim(ClaimTypes.Role, existingUser.Role ?? ApplicationRole.Attendee)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                await context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
             }
             else
             {

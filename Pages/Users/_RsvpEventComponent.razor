@@ -1,0 +1,46 @@
+<div class="mt-5">
+    <h5 class="ms-2 text-center text-white">@Title</h5>
+    @if (RsvpEvents is not null && RsvpEvents.Count > 0)
+    {
+        @foreach (var item in RsvpEvents)
+        {
+            <div class="p-3 mb-3 d-flex align-items-center bg-transparent20 rounded">
+                <div class="me-3">
+                    <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? Placeholder.ImageUrl : item.ImageUrl)" alt="Image" class="img-fluid" style="width: 150px; max-height: 100px;" />
+                </div>
+
+                <div class="ms-3 flex-grow-1">
+                    <h6>@item.Title</h6>
+                    <p><strong>Start:</strong> @item.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
+                    <p><strong>End:</strong> @item.End.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
+                </div>
+
+                <div class="text-end">
+                    @if (item.Start > DateTime.Now)
+                    {
+                        <button class="btn btn-danger btn-sm">Cancel Rsvp</button>
+                    }
+                    else if (item.Start <= DateTime.Now)
+                    {
+                        <button class="btn btn-light btn-sm">Leave a Review</button>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-center text-white">@Error</p>
+    }
+</div>
+
+@code
+{
+    [Parameter] public List<EventDto>? RsvpEvents { get; set; } = new();
+
+    [Parameter] public string? Title { get; set; }
+
+    [Parameter] public string? Error { get; set; }
+
+
+}

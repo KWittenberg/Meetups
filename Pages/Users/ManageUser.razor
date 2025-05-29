@@ -1,0 +1,59 @@
+﻿@page "/manage-user/{id:guid}"
+
+@attribute [Authorize(policy: "SameUserPolicy")]
+@inject IEventRepository Repository
+
+
+<h4 class="mt-5 text-center text-white">@Title</h4>
+
+@* @if (IsProcessing || Entity is null) *@
+@if (IsProcessing && RsvpEvents.Count > 0)
+{
+    <LoadingComponent />
+}
+else
+{
+    <div class="mt-5 @App?.GetContentClass()">
+
+        <_RsvpEventComponent Title="- Upcoming Events -"
+                             RsvpEvents="RsvpUpcomingEvents"
+                             Error="No Rsvp for upcoming events!" />
+        
+        <_RsvpEventComponent Title="- Past Events -"
+                             RsvpEvents="RsvpPastEvents"
+                             Error="No Rsvp for past events!" />
+    </div>
+}
+
+
+@code {
+    [CascadingParameter] AppState? App { get; set; }
+
+    [Parameter] public Guid Id { get; set; }
+
+    List<EventDto> RsvpEvents = new();
+    List<EventDto> RsvpUpcomingEvents = new();
+    List<EventDto> RsvpPastEvents = new();
+
+    UserDto? Entity;
+
+    string? Title { get; set; }
+
+    bool IsProcessing { get; set; } = true;
+
+
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var rsvpEvents = await Repository.GetUserRsvpEventsAsync(Id);
+        if (!rsvpEvents.Success || rsvpEvents.Data is null) return;
+
+        RsvpEvents = rsvpEvents.Data;
+        RsvpUpcomingEvents = RsvpEvents.Where(e => e.Start > DateTime.Now).ToList();
+        RsvpPastEvents = RsvpEvents.Where(e => e.Start <= DateTime.Now).ToList();
+
+        Title = $"Manage User: {Id}";
+        IsProcessing = false;
+    }
+}

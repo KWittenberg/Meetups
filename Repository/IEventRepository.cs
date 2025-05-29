@@ -32,7 +32,7 @@ public interface IEventRepository
 
 
 
-
+    Task<Result<List<EventDto>>> GetUserRsvpEventsAsync(Guid userId);
 
     Task<Result<List<UserDto>>> GetAttendeesByEventIdAsync(Guid id);
 }
