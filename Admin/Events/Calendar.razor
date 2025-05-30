@@ -1,5 +1,7 @@
 ﻿@page "/admin/cal"
 
+@attribute [Authorize(policy: "OrganizerOnly")]
+
 @inject IEventRepository Repository
 @inject IJSRuntime JsRuntime
 

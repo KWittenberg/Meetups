@@ -19,9 +19,10 @@
 
 
 @code {
-    
+    [Parameter] public bool IsOrganizer { get; set; } = false;
+
     IEnumerable<AuthenticationScheme>? ExternalLoginProviders;
-    
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -30,9 +31,7 @@
 
     void LoginWithExternalProviders(string providerName)
     {
-        // var redirectUrl = "/signin-callback";
-
-        //Navigation.NavigateTo($"authentication/{providerName}?redirectUri={Uri.EscapeDataString(redirectUrl)}", true);
-        Navigation.NavigateTo($"authentication/{providerName}", true);
+        if (IsOrganizer) Navigation.NavigateTo($"authentication/{providerName}/organizer", true);
+        else Navigation.NavigateTo($"authentication/{providerName}", true);
     }
 }

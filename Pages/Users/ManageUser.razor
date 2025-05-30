@@ -1,6 +1,8 @@
 ﻿@page "/manage-user/{id:guid}"
 
-@attribute [Authorize(policy: "SameUserPolicy")]
+@* @inherits BaseComponent *@
+
+@attribute [Authorize(Policy = "SameUserPolicy")]
 @inject IEventRepository Repository
 
 
@@ -15,6 +17,14 @@ else
 {
     <div class="mt-5 @App?.GetContentClass()">
 
+        <div>
+            <p>Id: <strong>@App?.CurrentUser.Id</strong></p>
+            <p>Name: <strong>@App?.CurrentUser.Name</strong></p>
+            <p>Email: <strong>@App?.CurrentUser.Email</strong></p>
+            <p>Role: <strong>@App?.CurrentUser.Role</strong></p>
+        </div>
+        
+        
         <_RsvpEventComponent Title="- Upcoming Events -"
                              RsvpEvents="RsvpUpcomingEvents"
                              Error="No Rsvp for upcoming events!" />
@@ -37,12 +47,12 @@ else
 
     UserDto? Entity;
 
-    string? Title { get; set; }
+    string? Title { get; set; } 
 
     bool IsProcessing { get; set; } = true;
 
 
-
+    
 
     protected override async Task OnParametersSetAsync()
     {
@@ -53,7 +63,7 @@ else
         RsvpUpcomingEvents = RsvpEvents.Where(e => e.Start > DateTime.Now).ToList();
         RsvpPastEvents = RsvpEvents.Where(e => e.Start <= DateTime.Now).ToList();
 
-        Title = $"Manage User: {Id}";
+        Title = $"Manage User: {App?.CurrentUser.Name}";
         IsProcessing = false;
     }
 }

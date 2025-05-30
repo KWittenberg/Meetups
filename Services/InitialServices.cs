@@ -4,9 +4,6 @@ public static class InitialServices
 {
     public static IServiceCollection AddInitialServices(this IServiceCollection services, IConfiguration configuration)
     {
-
-
-
         var connectionString = configuration.GetConnectionString("DevelopmentConnection") ?? throw new InvalidOperationException("Connection string 'DevelopmentConnection' not found!");
         services.AddDbContextFactory<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
@@ -35,7 +32,7 @@ public static class InitialServices
                         {
                             await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, context.Principal);
                             //await context.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, context.Principal, context.Properties);
-                            context.Response.Redirect("/signin-callback");
+                            context.Response.Redirect(context.ReturnUri);
                             context.HandleResponse(); // Suppress the default response
                         }
                     }
@@ -46,6 +43,11 @@ public static class InitialServices
 
         services.AddAuthorization(options =>
         {
+            options.AddPolicy("OrganizerOnly", policy =>
+            {
+                policy.RequireRole(ApplicationRole.Organizer);
+            });
+
             options.AddPolicy("SameUserPolicy", policy =>
             {
                 policy.RequireAssertion(context =>

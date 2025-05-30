@@ -1,22 +1,21 @@
-﻿@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject NavigationManager Navigation
+﻿@inherits BaseComponent
 
+@inject NavigationManager Navigation
 
 
 @if (IsAuthenticated)
 {
     <div class="d-flex justify-content-center align-items-center">
-        <span class="text-black me-2">Hi, <a href="/manage-user/DFCCBAFE-52D1-40AC-D6EE-08DD9E29ECA2">@UserName</a></span>
-        <a class="nav-link text-light btn btn-link" @onclick="Logout">Logout</a>
+        <h7 class="ms-4 text-black me-2">Hi, <a href="/manage-user/@UserId" class="text-white-50 text-decoration-none">@UserName</a></h7>
+        <h7 class="text-black btn btn-link text-decoration-none" @onclick="Logout">Logout</h7>
     </div>
 }
 else
 {
     <div class="d-flex justify-content-center align-items-center">
-        <a class="nav-link text-light btn btn-link" @onclick="Login">Login</a>
+        <h7 class="text-black btn btn-link text-decoration-none" @onclick="Login">Login</h7>
     </div>
 }
-
 
 <DialogXComponent Title="Login" @ref="LoginDialog">
     <DialogBody>
@@ -24,37 +23,14 @@ else
     </DialogBody>
 </DialogXComponent>
 
+
 @code {
-    AuthenticationState? AuthenticationState;
-
-    bool IsAuthenticated = false;
-    //bool IsAuthenticated => AuthenticationState?.User.Identity?.IsAuthenticated ?? false;
-
-    string? UserName = string.Empty;
-    Guid UserId = Guid.Empty;
-
     DialogXComponent? LoginDialog { get; set; } = new();
-
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        AuthenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-
-        var user = AuthenticationState?.User;
-
-        IsAuthenticated = user?.Identity?.IsAuthenticated ?? false;
-        UserName = IsAuthenticated ? user?.Identity?.Name : "Guest";
-        // UserId = IsAuthenticated ? Guid.Parse(user?.FindFirst("sub")?.Value ?? Guid.Empty.ToString()) : Guid.Empty;
-    }
 
     void Login()
     {
         if (IsAuthenticated == false) LoginDialog?.Show();
     }
 
-    void Logout()
-    {
-        Navigation.NavigateTo("/logout", true);
-    }
+    void Logout() => Navigation.NavigateTo("/logout", true);
 }

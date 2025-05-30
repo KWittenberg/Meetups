@@ -1,0 +1,29 @@
+﻿@inherits BaseComponent
+
+@inject NavigationManager Navigation
+
+@if (IsOrganizer)
+{
+    <a href="admin/events" class="btn btn-secondary btn-sm">Manage Events</a>
+}
+else
+{
+    <button class="btn btn-secondary btn-sm" @onclick="Login">Become an Organizer</button>
+}
+
+<DialogXComponent Title="Login" @ref="LoginDialog">
+    <DialogBody>
+        <ExternalLoginButtonsComponent IsOrganizer="true" />
+    </DialogBody>
+</DialogXComponent>
+
+
+@code {
+    DialogXComponent? LoginDialog { get; set; } = new();
+
+    void Login()
+    {
+        if (IsAuthenticated == false) LoginDialog?.Show();
+        else Navigation.NavigateTo("/signin-callback/organizer", true);
+    }
+}

@@ -1,16 +1,34 @@
 <div class="top-row">
-    
-    <i class="bi @(IsOpen ? "bi-chevron-left" : "bi-list")" @onclick="OnToggleSidebar"></i>
-    
-    
-    <SearchComponent SearchUrl=""/>
-    
-    
+    <div class="d-flex justify-content-start align-items-center">
+
+        @if (App?.CurrentUser.Role == ApplicationRole.Organizer)
+        {
+            <i class="bi @(IsOpen ? "bi-chevron-left" : "bi-list") me-3" @onclick="OnToggleSidebar"></i>
+        }
+        <a href="" class="text-decoration-none">
+            <div class="logo-icon">
+                <img src="/img/logo.png" alt="logo" class="img-fluid" />
+                <h5>eetups</h5>
+            </div>
+        </a>
+    </div>
+
+
+    <SearchComponent SearchUrl="" />
+
     <div>
         <a href="/admin/event" class="btn btn-warning btn-sm">Add Event</a>
     </div>
-    
-    <LoginStatusComponent />
+
+    <div class="d-flex justify-content-center align-items-center g-4">
+        <_BecomeOrganizerComponent />
+        <LoginStatusComponent />
+    </div>
+
+
+
+
+
     @* <AuthorizeView>
         <Authorized>
             <div class="nav-item px-3 d-flex justify-content-center align-content-center">
@@ -31,13 +49,13 @@
             </div>
         </Authorized>
     </AuthorizeView> *@
-    
+
     @* <a href="#" target="_blank">About</a> *@
 </div>
 
 @code {
     [CascadingParameter] AppState? App { get; set; }
-    
+
     [Parameter] public bool IsOpen { get; set; }
 
     [Parameter] public EventCallback OnToggleSidebar { get; set; }

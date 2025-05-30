@@ -6,11 +6,15 @@
         {
             <div class="p-3 mb-3 d-flex align-items-center bg-transparent20 rounded">
                 <div class="me-3">
-                    <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? Placeholder.ImageUrl : item.ImageUrl)" alt="Image" class="img-fluid" style="width: 150px; max-height: 100px;" />
+                    <a href="event/@item.Id" class="text-decoration-none">
+                        <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? Placeholder.ImageUrl : item.ImageUrl)" alt="Image" class="img-fluid" style="width: 150px; max-height: 100px;" />
+                    </a>
                 </div>
 
                 <div class="ms-3 flex-grow-1">
-                    <h6>@item.Title</h6>
+                    <a href="event/@item.Id" class="text-decoration-none text-dark">
+                        <h6>@item.Title</h6>
+                    </a>
                     <p><strong>Start:</strong> @item.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
                     <p><strong>End:</strong> @item.End.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
                 </div>

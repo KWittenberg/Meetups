@@ -1,8 +1,27 @@
-﻿namespace Meetups.Services;
+﻿namespace Meetups.Shared;
 
 //public class AppState(IHttpContextAccessor contextAccessor, IServiceScopeFactory scopeFactory)
 public class AppState()
 {
+    #region Google CurrentUser
+    private CurrentUser currentUser = new CurrentUser();
+
+    public CurrentUser CurrentUser => currentUser;
+
+
+    public void ResetCurrentUser()
+    {
+        currentUser.Id = Guid.Empty;
+        currentUser.Name = string.Empty;
+        currentUser.Email = string.Empty;
+        currentUser.Role = null;
+        currentUser.IsAuthenticated = false;
+    }
+    #endregion
+
+
+
+
     #region CurrentUser
     //public UserDto? CurrentUser { get; private set; }
 
@@ -72,15 +91,15 @@ public class AppState()
 
 
     #region Footer
-    public RenderFragment? FooterContent { get; set; } = null!;
+    //public RenderFragment? FooterContent { get; set; } = null!;
 
-    public Action? OnFooterContentChanged { get; set; }
+    //public Action? OnFooterContentChanged { get; set; }
 
-    public void SetFooterContent(RenderFragment? content)
-    {
-        FooterContent = content;
-        OnFooterContentChanged?.Invoke();
-    }
+    //public void SetFooterContent(RenderFragment? content)
+    //{
+    //    FooterContent = content;
+    //    OnFooterContentChanged?.Invoke();
+    //}
     #endregion
 
 

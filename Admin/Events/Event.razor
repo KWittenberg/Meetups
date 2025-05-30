@@ -1,5 +1,7 @@
 ﻿@page "/admin/event/{id:guid?}"
 
+@attribute [Authorize(Policy = "OrganizerOnly")]
+
 @inject IEventRepository Repository
 @inject NavigationManager Navigation
 
