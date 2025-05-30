@@ -61,4 +61,6 @@ public class Event : BaseAuditableEntity<Guid>
 
 
     public List<Rsvp> Rsvps { get; set; } = new();
+
+    public List<Comment> Comments { get; set; } = new();
 }

@@ -5,10 +5,9 @@
 @inject IEventRepository Repository
 @inject NavigationManager Navigation
 
+<PageHeader2 Title="@Title" BackLink="events" />
 
-<div class="mt-5 @App?.GetContentClass()">
-    <h3>@Title</h3>
-
+<div class="mt-100 @App?.GetContentClass()">
     <EditForm Model="Input" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <div class="mt-5 row">
@@ -143,14 +142,23 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Id is null) Input = new EventInput();
+        if (Id is null)
+        {
+            Input = new EventInput();
+            Input.OrganizerId = App!.CurrentUser.Id;
+        }
         else await LoadData();
     }
 
     async Task LoadData()
     {
-        var result = await Repository.GetByIdAsync(Id.Value);
+        var result = await Repository.GetByIdAsync(Id!.Value);
         if (!result.Success || result.Data is null) return;
+        if (result.Data.OrganizerId != App!.CurrentUser.Id)
+        {
+            Navigation.NavigateTo("/Account/AccessDenied");
+            return;
+        }
         Input = result.Data.ToInput();
         ImageData = null;
         StateHasChanged();
@@ -184,6 +192,8 @@
         await App!.ShowToast(result.Message, result.Success ? "success" : "error");
     }
     #endregion
+
+
 
     async Task HandleValidSubmit()
     {

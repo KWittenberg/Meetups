@@ -6,7 +6,7 @@
 
 <title>@Title</title>
 
-@* <PageHeader Title="@Title" AddButtonText="Add Screen" AddButtonLink="screen" /> *@
+<PageHeader Title="@Title" AddButtonText="Add Event" AddButtonLink="event" />
 
 @if (IsProcessing || Entities is null)
 {
@@ -66,7 +66,8 @@ else
 
     async Task LoadData()
     {
-        var result = await Repository.GetAllAsync();
+        //var result = await Repository.GetAllAsync();
+        var result = await Repository.GetEventsByOrganizerIdAsync(App!.CurrentUser.Id);
         if (!result.Success || result.Data is null) return;
 
         Entities = result.Data;

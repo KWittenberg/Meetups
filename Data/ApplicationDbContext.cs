@@ -11,6 +11,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Event> Events { get; set; } = null!;
 
+    public DbSet<Comment> Comments { get; set; } = null!;
+
     public DbSet<User> Users { get; set; } = null!;
 
     public DbSet<Rsvp> Rsvps { get; set; } = null!;
@@ -24,6 +26,9 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Rsvp>().HasOne(x => x.Event).WithMany(x => x.Rsvps).HasForeignKey(x => x.EventId);
 
+        modelBuilder.Entity<Comment>().HasOne(x => x.User).WithMany(x => x.Comments).HasForeignKey(x => x.UserId);
+
+        modelBuilder.Entity<Comment>().HasOne(x => x.Event).WithMany(x => x.Comments).HasForeignKey(x => x.EventId);
 
 
 

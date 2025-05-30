@@ -25,6 +25,23 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
         }
     }
 
+    public async Task<Result<List<EventDto>>> GetEventsByOrganizerIdAsync(Guid organizerId)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+
+        try
+        {
+            var entities = await db.Events.AsNoTracking().Where(x => x.OrganizerId == organizerId).ToListAsync();
+            if (!entities.Any()) return Result<List<EventDto>>.Error("Event not found!");
+
+            return Result<List<EventDto>>.Ok(entities.ToDtoList());
+        }
+        catch (Exception ex)
+        {
+            return Result<List<EventDto>>.Error($"Error: {ex.Message}");
+        }
+    }
+
     public async Task<Result<EventDto>> GetByIdAsync(Guid id)
     {
         await using var db = await dbFactory.CreateDbContextAsync();

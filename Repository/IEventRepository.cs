@@ -4,6 +4,8 @@ public interface IEventRepository
 {
     Task<Result<List<EventDto>>> GetAllAsync();
 
+    Task<Result<List<EventDto>>> GetEventsByOrganizerIdAsync(Guid organizerId);
+
     Task<Result<EventDto>> GetByIdAsync(Guid id);
 
     Task<Result> AddAsync(ImageData inputImage, EventInput input);

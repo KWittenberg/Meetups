@@ -1,0 +1,94 @@
+﻿@inject ICommentRepository Repository
+
+<h5>@Title</h5>
+
+
+
+@if (IsProcessing || Entities is null)
+{
+    <LoadingComponent />
+}
+else
+{
+    @if (App?.CurrentUser is null)
+    {
+        <div class="alert alert-warning" role="alert">
+            Please <a href="/login">log in</a> to leave a comment.
+        </div>
+    }
+    else
+    {
+        <div class="mt-5">
+            <div>
+                <label>Leave a Comment</label>
+                <InputTextArea @bind-Value="Input.Message" class="form-control" placeholder="Write your comment here..." rows="3" required />
+            </div>
+            <div class="text-end">
+                <button class="btn btn-primary" @onclick="HandleSubmit">Submit</button>
+            </div>
+        </div>
+    }
+
+    <div class="mt-5 container">
+        @foreach (var item in Entities)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="card-title">@item.User.Name + @(item.UserId == Event?.OrganizerId ? "Organizer" : string.Empty)</p>
+                    <p class="card-subtitle text-muted">@item.CreatedUtc.ToString("g")</p>
+                    <p class="card-text">@item.Message</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
+@code {
+    [CascadingParameter] AppState? App { get; set; }
+
+    [Parameter] public EventDto? Event { get; set; }
+
+    List<CommentDto>? Entities { get; set; } = new();
+
+    CommentInput Input = new();
+
+    const string Title = "Event Comments";
+
+    bool IsProcessing { get; set; } = true;
+
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await Repository.GetCommentsByEventIdAsync(Event!.Id);
+        if (!result.Success || result.Data is null) return;
+
+        Entities = result.Data;
+        IsProcessing = false;
+        StateHasChanged();
+    }
+
+    async Task HandleSubmit()
+    {
+        ArgumentNullException.ThrowIfNull(Input);
+
+        if (string.IsNullOrWhiteSpace(Input.Message))
+        {
+            App?.ShowToast("Comment cannot be empty.", "error");
+            return;
+        }
+        var newComment = new CommentInput
+        {
+            EventId = Event!.Id,
+            UserId = App!.CurrentUser.Id,
+            Message = Input.Message
+        };
+
+        var result = await Repository.AddAsync(newComment);
+        await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+
+        Input.Message = string.Empty;
+        StateHasChanged();
+    }
+}
