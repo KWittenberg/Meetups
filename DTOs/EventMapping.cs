@@ -28,7 +28,10 @@ public static class EventMapping
             Start = entity.Start,
             End = entity.End,
             AllDay = entity.AllDay,
-            OrganizerId = entity.OrganizerId
+            Recurrence = entity.Recurrence,
+            OrganizerId = entity.OrganizerId,
+            TicketPrice = entity.TicketPrice,
+            Refundable = entity.Refundable
         };
     }
 
@@ -47,7 +50,10 @@ public static class EventMapping
             capacity: input.Capacity,
             start: input.Start,
             end: input.End,
-            allDay: input.AllDay)
+            allDay: input.AllDay,
+            recurrence: input.Recurrence,
+            ticketPrice: input.TicketPrice,
+            refundable: input.Refundable)
         {
             // Note: OrganizerId is not set here since Event constructor doesn't include it.
             // If OrganizerId is part of the Event entity, set it explicitly.
@@ -70,7 +76,10 @@ public static class EventMapping
         entity.Start = input.Start;
         entity.End = input.End;
         entity.AllDay = input.AllDay;
+        entity.Recurrence = input.Recurrence;
         entity.OrganizerId = input.OrganizerId;
+        entity.TicketPrice = input.TicketPrice;
+        entity.Refundable = input.Refundable;
     }
 
     // UI -> 
@@ -90,7 +99,10 @@ public static class EventMapping
             Start = dto.Start,
             End = dto.End,
             AllDay = dto.AllDay,
-            OrganizerId = dto.OrganizerId
+            Recurrence = dto.Recurrence,
+            OrganizerId = dto.OrganizerId,
+            TicketPrice = dto.TicketPrice,
+            Refundable = dto.Refundable
         };
     }
 }

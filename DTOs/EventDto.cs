@@ -26,7 +26,14 @@ public class EventDto
 
     public bool AllDay { get; set; }
 
+    public Recurrence Recurrence { get; set; }
+
     public Guid? OrganizerId { get; set; }
+
+
+    public decimal? TicketPrice { get; set; }
+
+    public bool Refundable { get; set; }
 
 
 

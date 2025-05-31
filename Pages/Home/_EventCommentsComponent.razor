@@ -2,7 +2,31 @@
 
 <h5 class="mt-5 text-center text-white">@Title</h5>
 
-@if (App?.CurrentUser is null)
+@if (!IsProcessing || Entities is not null)
+{
+    <div class="mt-5 container">
+        @foreach (var item in Entities)
+        {
+
+            // TODO - IMPORTANT - Adding @key="item.Id" Blazor only Add not refresh All List
+            <div class="card mb-3" @key="item.Id">
+
+                <div class="card-body">
+                    <p class="card-title text-white">
+                        @item.UserName
+                        <span class="ms-2 badge text-bg-light">
+                            @(item.UserId == Event?.OrganizerId ? "Organizer" : string.Empty)
+                        </span>
+                    </p>
+                    <h7 class="position-absolute top-0 end-0">@item.CreatedUtc.ToString("g")</h7>
+                    <p class="card-text">@item.Message</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (!App!.CurrentUser.IsAuthenticated)
 {
     <div class="alert alert-warning" role="alert">
         Please <a href="/login">log in</a> to leave a comment.
@@ -21,27 +45,6 @@ else
     </div>
 }
 
-@if (!IsProcessing || Entities is not null)
-{
-    <div class="mt-5 container">
-        @foreach (var item in Entities)
-        {
-            <div class="card mb-3">
-                <div class="card-body">
-                    <p class="card-title text-white">
-                        @item.UserName
-                        <span class="ms-2 badge text-bg-light">
-                            @(item.UserId == Event?.OrganizerId ? "Organizer" : string.Empty)
-                        </span>
-                    </p>
-                    <h7 class="position-absolute top-0 end-0">@item.CreatedUtc.ToString("g")</h7>
-                    <p class="card-text">@item.Message</p>
-                </div>
-            </div>
-        }
-    </div>
-}
-
 
 @code {
     [CascadingParameter] AppState? App { get; set; }
@@ -56,9 +59,11 @@ else
 
     bool IsProcessing { get; set; } = true;
 
+    
 
-
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync() => await LoadData();
+    
+    async Task LoadData()
     {
         var result = await CommentRepository.GetCommentsByEventIdAsync(Event!.Id);
         if (!result.Success || result.Data is null) return;
@@ -67,6 +72,7 @@ else
         IsProcessing = false;
         StateHasChanged();
     }
+
 
     async Task HandleSubmit()
     {
@@ -85,10 +91,14 @@ else
             Message = Input.Message
         };
 
-        var result = await CommentRepository.AddAsync(newComment);
-        await App!.ShowToast(result.Message, result.Success ? "success" : "error");
-
+        await CommentRepository.AddAsync(newComment);
         Input.Message = string.Empty;
-        StateHasChanged();
+        await LoadData();
+
+        //Navigation.Refresh();
+        // Navigation.Refresh(true);
+        // var result = await CommentRepository.AddAsync(newComment);
+        // await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+        // StateHasChanged();
     }
 }

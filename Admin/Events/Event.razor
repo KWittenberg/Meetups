@@ -52,7 +52,7 @@
                     <label>Category</label>
                     <InputSelect class="form-select" @bind-Value="@Input.Category">
                         <option value="">Select Category</option>
-                        @foreach (var item in Categories)
+                        @foreach (var item in Categories())
                         {
                             <option value="@item">@item</option>
                         }
@@ -110,6 +110,37 @@
                     </div>
                 </div>
 
+                <div class="row d-flex align-items-center">
+                    <div class="col-6 form-group d-flex justify-content-start align-items-center">
+                        <InputCheckbox class="form-check form-check-input" @bind-Value="@Input.AllDay" />
+                        <label>AllDay</label>
+                    </div>
+                    <div class="col-6 form-group">
+                        <label>Recurrence</label>
+                        <InputSelect class="form-select" @bind-Value="@Input.Recurrence">
+                            <option value="">Select Recurrence</option>
+                            @foreach (var item in Recurrences())
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="() => Input.Recurrence" />
+                    </div>
+
+                </div>
+
+                <div class="row d-flex align-items-center">
+                    <div class="col-6 form-group">
+                        <label>TicketPrice</label>
+                        <InputNumber class="form-control" @bind-Value="@Input.TicketPrice" />
+                        <ValidationMessage For="() => Input.TicketPrice" />
+                    </div>
+                    <div class="col-6 form-group d-flex justify-content-start align-items-center">
+                        <InputCheckbox class="form-check form-check-input" @bind-Value="@Input.Refundable" />
+                        <label>Refundable</label>
+                    </div>
+                </div>
+
                 <div class="mt-4 p-0 text-end">
                     <a href="/admin/events" class="btn btn-outline-light">Back</a>
                     <button type="submit" class="btn btn-primary w-50">SAVE</button>
@@ -125,8 +156,9 @@
 
     [Parameter] public Guid? Id { get; set; }
 
-    List<string> Categories { get; set; } = new();
-
+    List<string> Categories() => Enum.GetNames(typeof(MeetupCategories)).ToList();
+    List<string> Recurrences() => Enum.GetNames(typeof(Recurrence)).ToList();
+    
     EventInput? Input { get; set; } = new();
 
     ImageData? ImageData { get; set; } = new();
@@ -134,11 +166,7 @@
     string Title => Id is not null ? "Update Event" : "Add Event";
 
 
-
-    protected override void OnInitialized()
-    {
-        Categories = Repository.GetAllCategories();
-    }
+    
 
     protected override async Task OnParametersSetAsync()
     {
@@ -198,10 +226,9 @@
     async Task HandleValidSubmit()
     {
         ArgumentNullException.ThrowIfNull(Input);
-        ArgumentNullException.ThrowIfNull(ImageData);
-
+        
         var result = Id is null
-            ? await Repository.AddAsync(ImageData, Input)
+            ? await Repository.AddAsync(ImageData!, Input)
             : await Repository.UpdateAsync(Id.Value, Input, ImageData);
 
         if (result.Success) Navigation.NavigateTo("/admin/events");

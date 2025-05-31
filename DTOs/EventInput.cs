@@ -38,7 +38,19 @@ public class EventInput
 
     public bool AllDay { get; set; }
 
+    public Recurrence Recurrence { get; set; } = Recurrence.OneTime;
+
     public Guid? OrganizerId { get; set; }
+
+
+
+
+    [Range(0, double.MaxValue)]
+    public decimal? TicketPrice { get; set; }
+
+    public bool Refundable { get; set; }
+
+
 
 
     //public EventInput()

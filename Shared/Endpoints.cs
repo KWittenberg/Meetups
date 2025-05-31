@@ -39,8 +39,6 @@ public static class Endpoints
         #endregion
 
 
-
-
         app.MapGet("/logout", async (HttpContext context, AppState appState) =>
         {
             appState.ResetCurrentUser();
@@ -48,6 +46,26 @@ public static class Endpoints
             await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             context.Response.Redirect("/");
         });
+
+
+        app.MapGet("/rsvp/{eventId:guid}/{paymentId?}",
+            async (Guid eventId, string? paymentId, HttpContext context, IRsvpRepository rsvpRepository, IDbContextFactory<ApplicationDbContext> contextFactory) =>
+            {
+                var emailClaim = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
+
+                var result = await rsvpRepository.AddAsync(emailClaim.Value, eventId, paymentId);
+
+                if (result.Success)
+                {
+                    await using var dbContext = await contextFactory.CreateDbContextAsync();
+                    var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == emailClaim.Value);
+                    context.Response.Redirect($"/manage-user/{user?.Id}");
+                }
+                else
+                {
+                    context.Response.Redirect("/rsvp-error");
+                }
+            });
     }
 
 

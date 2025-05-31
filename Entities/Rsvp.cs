@@ -17,4 +17,8 @@ public class Rsvp : BaseEntity<Guid>
     public DateTime RsvpDate { get; set; } = DateTime.UtcNow;
 
     public RsvpStatus Status { get; set; } = RsvpStatus.Undefined;
+
+
+    [StringLength(maximumLength: 200)]
+    public string? PaymentId { get; set; }
 }

@@ -1,0 +1,14 @@
+﻿@page "/rsvp-error"
+
+<h3>Rsvp Error</h3>
+
+
+<ErrorMessageComponent ErrorMessage="There was an error processing your RSVP. Please try again later." />
+
+<a href="/event/@EventId" class="btn btn-primary">Back to Event</a>
+
+
+
+@code {
+    [Parameter] public Guid EventId { get; set; } = Guid.Empty;
+}

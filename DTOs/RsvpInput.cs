@@ -9,4 +9,7 @@ public class RsvpInput
     public DateTime RsvpDate { get; set; } = DateTime.UtcNow;
 
     public RsvpStatus Status { get; set; } = RsvpStatus.Going;
+
+    [StringLength(maximumLength: 200)]
+    public string? PaymentId { get; set; }
 }

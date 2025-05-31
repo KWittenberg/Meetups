@@ -19,4 +19,7 @@ public class RsvpDto
     public DateTime RsvpDate { get; set; } = DateTime.UtcNow;
 
     public RsvpStatus Status { get; set; }
+
+
+    public string? PaymentId { get; set; }
 }

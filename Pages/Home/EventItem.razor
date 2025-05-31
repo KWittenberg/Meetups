@@ -36,11 +36,41 @@ else
                 </div>
 
                 <div class="p-2 text-white">
+                    
+                    <p>Price:
+                        <span class="badge @(Entity.TicketPrice > 0 ? "bg-primary" : "bg-success")">
+                            @(Entity.TicketPrice > 0 ? $"{Entity.TicketPrice} €" : "Free")
+                        </span>
+                    </p>
+                    
+                    @if (Entity.TicketPrice > 0)
+                    {
+                        <p><strong>Price:</strong> @Entity.TicketPrice €</p>
+                        @if (Entity.Refundable)
+                        {
+                            <p><strong>Refundable:</strong> Yes</p>
+                        }
+                        else
+                        {
+                            <p><strong>Refundable:</strong> No</p>
+                        }
+                    }
+                    
                     <p><strong>Category:</strong> @Entity.Category</p>
-                    <p><strong>Location:</strong> @Entity.Location</p>
-                    <p><strong>Start:</strong> @Entity.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
-                    <p><strong>End:</strong> @Entity.End.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</p>
-                    <p>
+
+                    @if (Entity.Category == MeetupCategories.InPerson.ToString())
+                    {
+                        <h7><strong>Location:</strong> @Entity.Location</h7>
+                        
+                    }
+                    else if (Entity.Category == MeetupCategories.Online.ToString())
+                    {
+                        <h7><strong>MeetupLink:</strong> @Entity.MeetupLink</h7>
+                    }
+                    
+                    <h7><strong>Start:</strong> @Entity.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</h7>
+                    <h7><strong>End:</strong> @Entity.End.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</h7>
+                    <h7>
                         <strong>Capacity:</strong>
                         @if (Entity.Capacity == 0)
                         {
@@ -54,7 +84,7 @@ else
                         {
                             <span class="text-white"> @Entity.Capacity</span>
                         }
-                    </p>
+                    </h7>
                 </div>
                 <div class="my-3">
                     <h5 class="mt-5 text-white text-center">Attendees</h5>
@@ -141,15 +171,24 @@ else
 
             ConfirmDialog?.Show("Are You sure you want to RSVP for this event?", async () =>
             {
-                var email = AuthenticationState?.User.FindFirst(x => x.Type == ClaimTypes.Email)?.Value;
+                // New logic to handle RSVP from Endpoint
+                if(Entity?.TicketPrice > 0) Navigation.NavigateTo($"/payment/{Entity.Id}", true);
+                else Navigation.NavigateTo($"/rsvp/{Entity?.Id}", true);
+                
+                
+                
+                
+                
+                // Old Logic directly from the original code
+                // var email = AuthenticationState?.User.FindFirst(x => x.Type == ClaimTypes.Email)?.Value;
 
-                var result = await RsvpRepository.AddAsync(email, Entity!.Id);
-                if (result.Success) Navigation.NavigateTo($"/event/{Entity.Id}", true);
-                else
-                {
-                    StateHasChanged();
-                }
-                await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+                // var result = await RsvpRepository.AddAsync(email, Entity!.Id);
+                // if (result.Success) Navigation.NavigateTo($"/event/{Entity.Id}", true);
+                // else
+                // {
+                //     StateHasChanged();
+                // }
+                // await App!.ShowToast(result.Message, result.Success ? "success" : "error");
             });
         }
     }

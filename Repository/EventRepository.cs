@@ -176,6 +176,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
 
     public List<string> GetAllCategories() => Enum.GetNames(typeof(MeetupCategories)).ToList();
+    public List<string> GetAllRecurrence() => Enum.GetNames(typeof(Recurrence)).ToList();
 
     public string ValidateEvent(EventInput input)
     {
@@ -400,127 +401,127 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
 
     #region OLD
-    public async Task<Result<List<EventDto>>> GetAllAsyncOld()
-    {
-        await using var db = await dbFactory.CreateDbContextAsync();
+    //public async Task<Result<List<EventDto>>> GetAllAsyncOld()
+    //{
+    //    await using var db = await dbFactory.CreateDbContextAsync();
 
-        try
-        {
-            var query = await db.Events.AsNoTracking().Select(x => new EventDto
-            {
-                Id = x.Id,
-                ImageUrl = x.ImageUrl,
-                Title = x.Title,
-                Details = x.Details,
-                Location = x.Location,
-                MeetupLink = x.MeetupLink,
-                Category = x.Category,
-                Capacity = x.Capacity,
-                Start = x.Start,
-                End = x.End,
-                AllDay = x.AllDay,
-                OrganizerId = x.OrganizerId
-            }).ToListAsync();
+    //    try
+    //    {
+    //        var query = await db.Events.AsNoTracking().Select(x => new EventDto
+    //        {
+    //            Id = x.Id,
+    //            ImageUrl = x.ImageUrl,
+    //            Title = x.Title,
+    //            Details = x.Details,
+    //            Location = x.Location,
+    //            MeetupLink = x.MeetupLink,
+    //            Category = x.Category,
+    //            Capacity = x.Capacity,
+    //            Start = x.Start,
+    //            End = x.End,
+    //            AllDay = x.AllDay,
+    //            OrganizerId = x.OrganizerId
+    //        }).ToListAsync();
 
-            if (!query.Any()) return Result<List<EventDto>>.Error("Event not found!");
+    //        if (!query.Any()) return Result<List<EventDto>>.Error("Event not found!");
 
-            return Result<List<EventDto>>.Ok(query);
-        }
-        catch (Exception ex)
-        {
-            return Result<List<EventDto>>.Error($"Error: {ex.Message}");
-        }
-    }
+    //        return Result<List<EventDto>>.Ok(query);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return Result<List<EventDto>>.Error($"Error: {ex.Message}");
+    //    }
+    //}
 
-    public async Task<Result<EventDto>> GetByIdAsyncOld(Guid id)
-    {
-        await using var db = await dbFactory.CreateDbContextAsync();
-        try
-        {
-            var entity = await db.Events.FindAsync(id);
-            if (entity == null) return Result<EventDto>.Error("Event not found!");
+    //public async Task<Result<EventDto>> GetByIdAsyncOld(Guid id)
+    //{
+    //    await using var db = await dbFactory.CreateDbContextAsync();
+    //    try
+    //    {
+    //        var entity = await db.Events.FindAsync(id);
+    //        if (entity == null) return Result<EventDto>.Error("Event not found!");
 
-            var output = new EventDto
-            {
-                Id = entity.Id,
-                ImageUrl = entity.ImageUrl,
-                Title = entity.Title,
-                Details = entity.Details,
-                Location = entity.Location,
-                MeetupLink = entity.MeetupLink,
-                Category = entity.Category,
-                Capacity = entity.Capacity,
-                Start = entity.Start,
-                End = entity.End,
-                AllDay = entity.AllDay,
-                OrganizerId = entity.OrganizerId
-            };
+    //        var output = new EventDto
+    //        {
+    //            Id = entity.Id,
+    //            ImageUrl = entity.ImageUrl,
+    //            Title = entity.Title,
+    //            Details = entity.Details,
+    //            Location = entity.Location,
+    //            MeetupLink = entity.MeetupLink,
+    //            Category = entity.Category,
+    //            Capacity = entity.Capacity,
+    //            Start = entity.Start,
+    //            End = entity.End,
+    //            AllDay = entity.AllDay,
+    //            OrganizerId = entity.OrganizerId
+    //        };
 
-            return Result<EventDto>.Ok(output);
-        }
-        catch (Exception ex)
-        {
-            return Result<EventDto>.Error($"Database error: {ex.Message}");
-        }
-    }
+    //        return Result<EventDto>.Ok(output);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return Result<EventDto>.Error($"Database error: {ex.Message}");
+    //    }
+    //}
 
-    public async Task<Result> AddAsyncOld(EventInput input)
-    {
-        await using var db = await dbFactory.CreateDbContextAsync();
+    //public async Task<Result> AddAsyncOld(EventInput input)
+    //{
+    //    await using var db = await dbFactory.CreateDbContextAsync();
 
-        try
-        {
-            var entity = new Event(
-                input.ImageUrl,
-                input.Title,
-                input.Details,
-                input.Location,
-                input.MeetupLink,
-                input.Category,
-                input.Capacity,
-                input.Start,
-                input.End,
-                input.AllDay);
+    //    try
+    //    {
+    //        var entity = new Event(
+    //            input.ImageUrl,
+    //            input.Title,
+    //            input.Details,
+    //            input.Location,
+    //            input.MeetupLink,
+    //            input.Category,
+    //            input.Capacity,
+    //            input.Start,
+    //            input.End,
+    //            input.AllDay);
 
-            await db.Events.AddAsync(entity);
-            await db.SaveChangesAsync();
+    //        await db.Events.AddAsync(entity);
+    //        await db.SaveChangesAsync();
 
-            return Result.Ok("Event added!");
-        }
-        catch (Exception ex)
-        {
-            return Result.Error($"Database error: {ex.Message}");
-        }
-    }
+    //        return Result.Ok("Event added!");
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return Result.Error($"Database error: {ex.Message}");
+    //    }
+    //}
 
-    public async Task<Result> UpdateAsyncOld(Guid id, EventInput input)
-    {
-        await using var db = await dbFactory.CreateDbContextAsync();
-        try
-        {
-            var entity = await db.Events.FindAsync(id);
-            if (entity == null) return Result.Error("Event not found!");
+    //public async Task<Result> UpdateAsyncOld(Guid id, EventInput input)
+    //{
+    //    await using var db = await dbFactory.CreateDbContextAsync();
+    //    try
+    //    {
+    //        var entity = await db.Events.FindAsync(id);
+    //        if (entity == null) return Result.Error("Event not found!");
 
-            entity.ImageUrl = input.ImageUrl;
-            entity.Title = input.Title;
-            entity.Details = input.Details;
-            entity.Location = input.Location;
-            entity.MeetupLink = input.MeetupLink;
-            entity.Category = input.Category;
-            entity.Capacity = input.Capacity;
-            entity.Start = input.Start;
-            entity.End = input.End;
-            entity.AllDay = input.AllDay;
+    //        entity.ImageUrl = input.ImageUrl;
+    //        entity.Title = input.Title;
+    //        entity.Details = input.Details;
+    //        entity.Location = input.Location;
+    //        entity.MeetupLink = input.MeetupLink;
+    //        entity.Category = input.Category;
+    //        entity.Capacity = input.Capacity;
+    //        entity.Start = input.Start;
+    //        entity.End = input.End;
+    //        entity.AllDay = input.AllDay;
 
-            db.Events.Update(entity);
-            await db.SaveChangesAsync();
+    //        db.Events.Update(entity);
+    //        await db.SaveChangesAsync();
 
-            return Result.Ok("Event updated!");
-        }
-        catch (Exception ex)
-        {
-            return Result.Error($"Database error: {ex.Message}");
-        }
-    }
+    //        return Result.Ok("Event updated!");
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return Result.Error($"Database error: {ex.Message}");
+    //    }
+    //}
     #endregion
 }
