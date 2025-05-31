@@ -1,4 +1,5 @@
 ﻿global using Meetups.Data;
+global using Meetups.Data.Configurations;
 global using Meetups.DTOs;
 global using Meetups.Entities;
 global using Meetups.Enums;
@@ -15,6 +16,7 @@ global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Authorization;
 global using Microsoft.AspNetCore.Components.Forms;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Processing;
 global using System.ComponentModel.DataAnnotations;

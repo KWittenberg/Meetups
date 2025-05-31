@@ -13,4 +13,6 @@ public class UserDto
 
 
     public List<RsvpDto> Rsvps { get; set; } = new();
+
+    public List<CommentDto> Comments { get; set; } = new();
 }

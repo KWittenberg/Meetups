@@ -344,7 +344,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
     private static async Task<List<Event>> SearchEvents(string? filter, ApplicationDbContext db)
     {
         return await db.Events.AsNoTracking()
-            .Where(x => x.Start >= DateTime.Now && (string.IsNullOrEmpty(filter) || x.Title.Contains(filter) || x.Description.Contains(filter) || x.Location.Contains(filter)))
+            .Where(x => x.Start >= DateTime.Now && (string.IsNullOrEmpty(filter) || x.Title.Contains(filter) || x.Details.Contains(filter) || x.Location.Contains(filter)))
             .OrderByDescending(x => x.Start)
             .ToListAsync();
     }
@@ -383,7 +383,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
         {
             var entities = await db.Rsvps.AsNoTracking()
                                             .Include(x => x.User)
-                                            .Where(x => x.EventId == id && x.Status == "Going")
+                                            .Where(x => x.EventId == id && x.Status == RsvpStatus.Going)
                                             .Select(x => x.User)
                                             .ToListAsync();
 
@@ -411,7 +411,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
                 Id = x.Id,
                 ImageUrl = x.ImageUrl,
                 Title = x.Title,
-                Description = x.Description,
+                Details = x.Details,
                 Location = x.Location,
                 MeetupLink = x.MeetupLink,
                 Category = x.Category,
@@ -445,7 +445,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
                 Id = entity.Id,
                 ImageUrl = entity.ImageUrl,
                 Title = entity.Title,
-                Description = entity.Description,
+                Details = entity.Details,
                 Location = entity.Location,
                 MeetupLink = entity.MeetupLink,
                 Category = entity.Category,
@@ -473,7 +473,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             var entity = new Event(
                 input.ImageUrl,
                 input.Title,
-                input.Description,
+                input.Details,
                 input.Location,
                 input.MeetupLink,
                 input.Category,
@@ -503,7 +503,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
             entity.ImageUrl = input.ImageUrl;
             entity.Title = input.Title;
-            entity.Description = input.Description;
+            entity.Details = input.Details;
             entity.Location = input.Location;
             entity.MeetupLink = input.MeetupLink;
             entity.Category = input.Category;

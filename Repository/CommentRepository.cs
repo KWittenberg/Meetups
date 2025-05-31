@@ -11,7 +11,9 @@ public class CommentRepository(IDbContextFactory<ApplicationDbContext> dbFactory
             var entities = await db.Comments.AsNoTracking().Where(x => x.EventId == eventId).ToListAsync();
             if (!entities.Any()) return Result<List<CommentDto>>.Error("Comment not found!");
 
-            return Result<List<CommentDto>>.Ok(entities.ToDtoList());
+            var output = entities.ToDtoList();
+
+            return Result<List<CommentDto>>.Ok(output);
         }
         catch (Exception ex)
         {
@@ -28,7 +30,7 @@ public class CommentRepository(IDbContextFactory<ApplicationDbContext> dbFactory
             await db.Comments.AddAsync(input.ToEntity());
             await db.SaveChangesAsync();
 
-            return Result.Ok("Event added!");
+            return Result.Ok("Comment added!");
         }
         catch (Exception ex)
         {

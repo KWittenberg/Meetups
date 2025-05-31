@@ -8,7 +8,7 @@ public class EventDto
 
     public string Title { get; set; } = string.Empty;
 
-    public string? Description { get; set; }
+    public string? Details { get; set; }
 
     public string? Location { get; set; }
 
@@ -31,4 +31,6 @@ public class EventDto
 
 
     public List<RsvpDto> Rsvps { get; set; } = new();
+
+    public List<CommentDto> Comments { get; set; } = new();
 }

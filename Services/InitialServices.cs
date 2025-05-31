@@ -11,6 +11,10 @@ public static class InitialServices
         // services.AddDbContextFactory<ApplicationDbContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
 
 
+        services.AddHttpContextAccessor();
+        services.AddCascadingAuthenticationState();
+
+
         // Add Google Authentication
         services.AddAuthentication(options =>
         {

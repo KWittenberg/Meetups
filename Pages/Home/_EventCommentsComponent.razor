@@ -1,41 +1,40 @@
-﻿@inject ICommentRepository Repository
+﻿@inject ICommentRepository CommentRepository
 
-<h5>@Title</h5>
+<h5 class="mt-5 text-center text-white">@Title</h5>
 
-
-
-@if (IsProcessing || Entities is null)
+@if (App?.CurrentUser is null)
 {
-    <LoadingComponent />
+    <div class="alert alert-warning" role="alert">
+        Please <a href="/login">log in</a> to leave a comment.
+    </div>
 }
 else
 {
-    @if (App?.CurrentUser is null)
-    {
-        <div class="alert alert-warning" role="alert">
-            Please <a href="/login">log in</a> to leave a comment.
+    <div class="mt-5">
+        <div>
+            <label class="text-white">Leave a Comment</label>
+            <InputTextArea @bind-Value="Input.Message" class="form-control" placeholder="Write your comment here..." rows="3" required />
         </div>
-    }
-    else
-    {
-        <div class="mt-5">
-            <div>
-                <label>Leave a Comment</label>
-                <InputTextArea @bind-Value="Input.Message" class="form-control" placeholder="Write your comment here..." rows="3" required />
-            </div>
-            <div class="text-end">
-                <button class="btn btn-primary" @onclick="HandleSubmit">Submit</button>
-            </div>
+        <div class="text-end">
+            <button class="btn btn-primary" @onclick="HandleSubmit">Submit</button>
         </div>
-    }
+    </div>
+}
 
+@if (!IsProcessing || Entities is not null)
+{
     <div class="mt-5 container">
         @foreach (var item in Entities)
         {
             <div class="card mb-3">
                 <div class="card-body">
-                    <p class="card-title">@item.User.Name + @(item.UserId == Event?.OrganizerId ? "Organizer" : string.Empty)</p>
-                    <p class="card-subtitle text-muted">@item.CreatedUtc.ToString("g")</p>
+                    <p class="card-title text-white">
+                        @item.UserName
+                        <span class="ms-2 badge text-bg-light">
+                            @(item.UserId == Event?.OrganizerId ? "Organizer" : string.Empty)
+                        </span>
+                    </p>
+                    <h7 class="position-absolute top-0 end-0">@item.CreatedUtc.ToString("g")</h7>
                     <p class="card-text">@item.Message</p>
                 </div>
             </div>
@@ -61,7 +60,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        var result = await Repository.GetCommentsByEventIdAsync(Event!.Id);
+        var result = await CommentRepository.GetCommentsByEventIdAsync(Event!.Id);
         if (!result.Success || result.Data is null) return;
 
         Entities = result.Data;
@@ -81,11 +80,12 @@ else
         var newComment = new CommentInput
         {
             EventId = Event!.Id,
-            UserId = App!.CurrentUser.Id,
+            UserId = App.CurrentUser.Id,
+            UserName = App.CurrentUser.Name,
             Message = Input.Message
         };
 
-        var result = await Repository.AddAsync(newComment);
+        var result = await CommentRepository.AddAsync(newComment);
         await App!.ShowToast(result.Message, result.Success ? "success" : "error");
 
         Input.Message = string.Empty;

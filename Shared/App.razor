@@ -13,7 +13,7 @@
 
     <link rel="stylesheet" href="@Assets["css/app.css"]" />
     <link rel="stylesheet" href="@Assets["Meetups.styles.css"]" />
-    
+
 
     <ImportMap />
     <link rel="icon" type="image/png" href="img/logo icon.png" />
@@ -22,8 +22,10 @@
 
 <body>
     @* <Routes @rendermode="InteractiveServer" /> *@
-    <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
-
+    <CascadingAuthenticationState>
+        <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+    </CascadingAuthenticationState>
+    
 
     <!-- JS Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -34,8 +36,9 @@
 
     <script src="_framework/blazor.web.js"></script>
 </body>
-            
+
 </html>
+
 
 @code {
     //[CascadingParameter] HttpContext HttpContext { get; set; } = default!;

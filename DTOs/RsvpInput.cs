@@ -8,5 +8,5 @@ public class RsvpInput
 
     public DateTime RsvpDate { get; set; } = DateTime.UtcNow;
 
-    public string Status { get; set; } = string.Empty;
+    public RsvpStatus Status { get; set; } = RsvpStatus.Going;
 }

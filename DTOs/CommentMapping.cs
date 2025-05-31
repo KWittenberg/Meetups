@@ -19,9 +19,8 @@ public static class CommentMapping
         {
             Id = entity.Id,
             UserId = entity.UserId,
-            User = entity.User,
+            UserName = entity.UserName,
             EventId = entity.EventId,
-            Event = entity.Event,
             Message = entity.Message,
             CreatedUtc = entity.CreatedUtc
         };
@@ -34,6 +33,7 @@ public static class CommentMapping
 
         return new Comment(
             userId: input.UserId,
+            userName: input.UserName,
             eventId: input.EventId,
             message: input.Message);
     }

@@ -12,7 +12,7 @@ public class EventInput
 
 
     [StringLength(maximumLength: 4000)]
-    public string? Description { get; set; }
+    public string? Details { get; set; }
 
 
     [StringLength(maximumLength: 200)]

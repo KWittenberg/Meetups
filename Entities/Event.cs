@@ -4,12 +4,12 @@ public class Event : BaseAuditableEntity<Guid>
 {
     public Event() { }
 
-    public Event(string? imageUrl, string title, string? description, string? location, string? meetupLink, string? category, int capacity,
+    public Event(string? imageUrl, string title, string? details, string? location, string? meetupLink, string? category, int capacity,
                 DateTime start, DateTime end, bool allDay)
     {
         ImageUrl = imageUrl;
         Title = title;
-        Description = description;
+        Details = details;
         Location = location;
         MeetupLink = meetupLink;
         Category = category;
@@ -28,7 +28,7 @@ public class Event : BaseAuditableEntity<Guid>
 
 
     [StringLength(maximumLength: 4000)]
-    public string? Description { get; set; }
+    public string? Details { get; set; }
 
 
     [StringLength(maximumLength: 200)]

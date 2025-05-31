@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Meetups.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250528195304_AddUserAndRsvp")]
-    partial class AddUserAndRsvp
+    [Migration("20250530235253_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,40 @@ namespace Meetups.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Meetups.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
 
             modelBuilder.Entity("Meetups.Entities.Event", b =>
                 {
@@ -47,7 +81,7 @@ namespace Meetups.Data.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Details")
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
@@ -107,12 +141,12 @@ namespace Meetups.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("RsvpDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -169,18 +203,37 @@ namespace Meetups.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Meetups.Entities.Comment", b =>
+                {
+                    b.HasOne("Meetups.Entities.Event", "Event")
+                        .WithMany("Comments")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Meetups.Entities.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Meetups.Entities.Rsvp", b =>
                 {
                     b.HasOne("Meetups.Entities.Event", "Event")
                         .WithMany("Rsvps")
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Meetups.Entities.User", "User")
                         .WithMany("Rsvps")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Event");
@@ -190,11 +243,15 @@ namespace Meetups.Data.Migrations
 
             modelBuilder.Entity("Meetups.Entities.Event", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Rsvps");
                 });
 
             modelBuilder.Entity("Meetups.Entities.User", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Rsvps");
                 });
 #pragma warning restore 612, 618

@@ -23,7 +23,7 @@ public class RsvpRepository(IDbContextFactory<ApplicationDbContext> contextFacto
                 UserId = user.Id,
                 EventId = eventId,
                 RsvpDate = DateTime.Now,
-                Status = "Going"
+                Status = RsvpStatus.Going
             };
 
             await db.Rsvps.AddAsync(rsvp);

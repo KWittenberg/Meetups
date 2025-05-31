@@ -20,7 +20,7 @@ public static class EventMapping
             Id = entity.Id,
             ImageUrl = entity.ImageUrl,
             Title = entity.Title,
-            Description = entity.Description,
+            Details = entity.Details,
             Location = entity.Location,
             MeetupLink = entity.MeetupLink,
             Category = entity.Category,
@@ -40,7 +40,7 @@ public static class EventMapping
         return new Event(
             imageUrl: input.ImageUrl,
             title: input.Title,
-            description: input.Description,
+            details: input.Details,
             location: input.Location,
             meetupLink: input.MeetupLink,
             category: input.Category,
@@ -62,7 +62,7 @@ public static class EventMapping
 
         entity.ImageUrl = input.ImageUrl;
         entity.Title = input.Title;
-        entity.Description = input.Description;
+        entity.Details = input.Details;
         entity.Location = input.Location;
         entity.MeetupLink = input.MeetupLink;
         entity.Category = input.Category;
@@ -82,7 +82,7 @@ public static class EventMapping
         {
             ImageUrl = dto.ImageUrl,
             Title = dto.Title,
-            Description = dto.Description,
+            Details = dto.Details,
             Location = dto.Location,
             MeetupLink = dto.MeetupLink,
             Category = dto.Category,

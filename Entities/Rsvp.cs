@@ -14,11 +14,7 @@ public class Rsvp : BaseEntity<Guid>
     public User? User { get; set; }
 
 
-
-
     public DateTime RsvpDate { get; set; } = DateTime.UtcNow;
 
-
-    [StringLength(maximumLength: 50)]
-    public string Status { get; set; } = string.Empty;
+    public RsvpStatus Status { get; set; } = RsvpStatus.Undefined;
 }
