@@ -48,12 +48,12 @@ public static class Endpoints
         });
 
 
-        app.MapGet("/rsvp/{eventId:guid}/{paymentId?}",
-            async (Guid eventId, string? paymentId, HttpContext context, IRsvpRepository rsvpRepository, IDbContextFactory<ApplicationDbContext> contextFactory) =>
+        app.MapGet("/rsvp/{eventId:guid}/{paymentId?}/{paymentStatus?}",
+            async (Guid eventId, string? paymentId, string? paymentStatus, HttpContext context, IRsvpRepository rsvpRepository, IDbContextFactory<ApplicationDbContext> contextFactory) =>
             {
                 var emailClaim = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
 
-                var result = await rsvpRepository.AddAsync(emailClaim.Value, eventId, paymentId);
+                var result = await rsvpRepository.AddAsync(emailClaim.Value, eventId, paymentId, paymentStatus);
 
                 if (result.Success)
                 {
@@ -65,7 +65,7 @@ public static class Endpoints
                 {
                     context.Response.Redirect("/rsvp-error");
                 }
-            });
+            }).RequireAuthorization();
     }
 
 

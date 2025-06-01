@@ -18,8 +18,16 @@ public class RsvpDto
 
     public DateTime RsvpDate { get; set; } = DateTime.UtcNow;
 
-    public RsvpStatus Status { get; set; }
+    public RsvpStatus? Status { get; set; }
+
 
 
     public string? PaymentId { get; set; }
+
+    public PaymentStatus? PaymentStatus { get; set; }
+
+
+    public string? RefundId { get; set; }
+
+    public RefundStatus? RefundStatus { get; set; }
 }

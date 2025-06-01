@@ -1,0 +1,25 @@
+﻿@page "/payment-success/{eventId}/{checkoutSessionId}"
+
+@inject IPaymentService PaymentService
+@inject NavigationManager Navigation
+
+
+<h3>Payment Success</h3>
+
+
+@code {
+    [CascadingParameter] AppState? App { get; set; }
+
+    [Parameter] public string EventId { get; set; } = string.Empty;
+
+    [Parameter] public string CheckoutSessionId { get; set; } = string.Empty;
+
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var session = await PaymentService.GetCheckoutSessionAsync(CheckoutSessionId);
+
+        Navigation.NavigateTo($"/rsvp/{EventId}/{session.PaymentIntentId}/{session.PaymentIntent.Status}");
+    }
+}

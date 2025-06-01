@@ -1,71 +1,63 @@
-﻿namespace Meetups.Services;
+﻿using Stripe;
 
-public class PaymentService() //: IPaymentService
+namespace Meetups.Services;
+
+public class PaymentService(IConfiguration configuration) : IPaymentService
 {
-    public async Task CreateCheckoutSessionAsync()
+    readonly string stripeApiKey = configuration["Stripe:SecretKey"] ?? string.Empty;
+
+
+    public async Task<Session> GetCheckoutSessionAsync(string sessionId)
     {
-        var service = new Stripe.Checkout.SessionService();
-        var options = new Stripe.Checkout.SessionCreateOptions
+        StripeConfiguration.ApiKey = stripeApiKey;
+        var service = new SessionService();
+        var session = await service.GetAsync(sessionId);
+
+        return session;
+    }
+
+    public async Task<string> CreateCheckoutSessionAsync(string userEmail, EventDto input, string baseUrl, string cancelUrl)
+    {
+        var options = new SessionCreateOptions
         {
-            PaymentMethodTypes = new List<string> { "card" },
-            LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
+            LineItems = new List<SessionLineItemOptions>
             {
-                new Stripe.Checkout.SessionLineItemOptions
+                new SessionLineItemOptions
                 {
-                    PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
+                    PriceData = new SessionLineItemPriceDataOptions
                     {
-                        Currency = "usd",
-                        ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
+                        Currency = "eur", // or "usd", "eur", "gbp", etc.
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = "Meetup Ticket",
+                            Name = input.Title,
+                            // Images = new List<string> { $"{baseUrl.TrimEnd('/')}/img/events/{input.ImageUrl}" },
+                            // Images = new List<string> { "https://bolta.runasp.net/img/shop/2004%20Pjesme/_01.jpg" },
+                            Description = $"Date and Time: {input.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")}"
                         },
-                        UnitAmount = 2000, // $20.00
+                        UnitAmount = (long)(input.TicketPrice!.Value * 100), // in Cents - if TicketPrice = 5€ => 500 cent, // 5.00€
                     },
                     Quantity = 1,
                 },
             },
             Mode = "payment",
-            SuccessUrl = "https://yourdomain.com/success",
-            CancelUrl = "https://yourdomain.com/cancel",
+            SuccessUrl = $"{baseUrl.TrimEnd('/')}/payment-success/{input.Id}/{{CHECKOUT_SESSION_ID}}",
+            CancelUrl = cancelUrl,
+            CustomerEmail = userEmail,
+            // PaymentMethodTypes = new List<string> { "card", "ideal", "sepa_debit" }, // Dodate metode plaćanja
+            BillingAddressCollection = "required", // Zahtevaj adresu za naplatu
+            // Locale = "hr", // Hrvatski jezik za Checkout
+            Metadata = new Dictionary<string, string> // Dodaj metapodatke
+            {
+                { "user_email", userEmail },
+                { "event_id", input.Id.ToString() },
+                { "event_title", input.Title }
+            }
         };
 
+        StripeConfiguration.ApiKey = stripeApiKey;
+        var service = new SessionService();
+        var session = await service.CreateAsync(options);
 
-
-
-        //await using var db = await contextFactory.CreateDbContextAsync();
-
-        //try
-        //{
-        //    var user = await db.Users.FirstOrDefaultAsync(x => x.Email == email);
-        //    if (user is null) return Result.Error("User not found!");
-
-        //    var eventExist = await db.Events.AnyAsync(x => x.Id == eventId);
-        //    if (!eventExist) return Result.Error("Event not found!");
-
-        //    var rsvpExist = await db.Rsvps.AnyAsync(x => x.EventId == eventId && x.UserId == user.Id);
-        //    if (rsvpExist) return Result.Error("User has already Rsvped for this event!");
-
-        //    var rsvp = new Rsvp
-        //    {
-        //        Id = Guid.NewGuid(),
-        //        UserId = user.Id,
-        //        EventId = eventId,
-        //        RsvpDate = DateTime.Now,
-        //        Status = RsvpStatus.Going,
-        //        PaymentId = paymentId
-        //    };
-
-        //    await db.Rsvps.AddAsync(rsvp);
-        //    await db.SaveChangesAsync();
-
-        //    return Result.Ok("Rsvp added!");
-        //}
-        //catch (Exception ex)
-        //{
-        //    return Result.Error($"Database error: {ex.Message}");
-        //}
+        return session.Url;
     }
-
-
-
 }

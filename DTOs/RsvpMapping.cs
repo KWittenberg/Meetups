@@ -24,7 +24,11 @@ public static class RsvpMapping
             UserId = entity.UserId,
             User = entity.User?.ToDto(),
             RsvpDate = entity.RsvpDate,
-            Status = entity.Status
+            Status = entity.Status,
+            PaymentId = entity.PaymentId,
+            PaymentStatus = entity.PaymentStatus,
+            RefundId = entity.RefundId,
+            RefundStatus = entity.RefundStatus
         };
     }
 
@@ -38,7 +42,11 @@ public static class RsvpMapping
             EventId = input.EventId,
             UserId = input.UserId,
             RsvpDate = input.RsvpDate,
-            Status = input.Status
+            Status = input.Status,
+            PaymentId = input.PaymentId,
+            PaymentStatus = input.PaymentStatus,
+            RefundId = input.RefundId,
+            RefundStatus = input.RefundStatus
         };
     }
 
@@ -51,6 +59,10 @@ public static class RsvpMapping
         entity.UserId = input.UserId;
         entity.RsvpDate = input.RsvpDate;
         entity.Status = input.Status;
+        entity.PaymentId = input.PaymentId;
+        entity.PaymentStatus = input.PaymentStatus;
+        entity.RefundId = input.RefundId;
+        entity.RefundStatus = input.RefundStatus;
     }
 
     // UI ->
@@ -63,7 +75,11 @@ public static class RsvpMapping
             EventId = dto.EventId,
             UserId = dto.UserId,
             RsvpDate = dto.RsvpDate,
-            Status = dto.Status
+            Status = dto.Status,
+            PaymentId = dto.PaymentId,
+            PaymentStatus = dto.PaymentStatus,
+            RefundId = dto.RefundId,
+            RefundStatus = dto.RefundStatus
         };
     }
 }

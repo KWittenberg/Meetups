@@ -3,6 +3,7 @@
 public enum RsvpStatus
 {
     Undefined,
+    Canceled,
     NotGoing,
     Maybe,
     Going

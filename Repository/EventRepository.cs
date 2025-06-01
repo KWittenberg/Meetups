@@ -360,10 +360,9 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
         try
         {
-            var entities = await db.Events.Include(x => x.Rsvps)
-                .AsNoTracking()
-                .Where(x => x.Rsvps.Any(x => x.UserId == userId))
-                .ToListAsync();
+            var entities = await db.Events.Include(x => x.Rsvps).AsNoTracking()
+                                            .Where(x => x.Rsvps.Any(x => x.UserId == userId && x.Status == RsvpStatus.Going))
+                                            .ToListAsync();
 
             if (!entities.Any()) return Result<List<EventDto>>.Error("Event not found!");
 

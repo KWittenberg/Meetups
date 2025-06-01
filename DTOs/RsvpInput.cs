@@ -8,8 +8,18 @@ public class RsvpInput
 
     public DateTime RsvpDate { get; set; } = DateTime.UtcNow;
 
-    public RsvpStatus Status { get; set; } = RsvpStatus.Going;
+    public RsvpStatus? Status { get; set; } = RsvpStatus.Going;
+
+
+
 
     [StringLength(maximumLength: 200)]
     public string? PaymentId { get; set; }
+
+    public PaymentStatus? PaymentStatus { get; set; }
+
+    [StringLength(maximumLength: 50)]
+    public string? RefundId { get; set; }
+
+    public RefundStatus? RefundStatus { get; set; }
 }

@@ -8,6 +8,8 @@ public static class ConfigureServices
 
         services.AddSingleton<AppState>();
 
+        services.AddScoped<IPaymentService, PaymentService>();
+
 
 
         return services;

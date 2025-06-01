@@ -16,9 +16,17 @@ public class Rsvp : BaseEntity<Guid>
 
     public DateTime RsvpDate { get; set; } = DateTime.UtcNow;
 
-    public RsvpStatus Status { get; set; } = RsvpStatus.Undefined;
+    public RsvpStatus? Status { get; set; }
 
 
-    [StringLength(maximumLength: 200)]
+
+    [StringLength(maximumLength: 50)]
     public string? PaymentId { get; set; }
+
+    public PaymentStatus? PaymentStatus { get; set; }
+
+    [StringLength(maximumLength: 50)]
+    public string? RefundId { get; set; }
+
+    public RefundStatus? RefundStatus { get; set; }
 }

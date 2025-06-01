@@ -1,6 +1,8 @@
 ﻿@page "/payment/{eventId:guid}"
 
 @inject IEventRepository EventRepository
+@inject IPaymentService PaymentService
+@inject NavigationManager Navigation
 
 <title>@Title</title>
 
@@ -14,43 +16,34 @@ else
         <div class="card">
             <div class="card-header bg-primary text-white">
                 <h6>@Title</h6>
+                <h7>@SubTitle</h7>
             </div>
             <div class="card-body">
+                <img src="@Entity.ImageUrl" alt="image"/>
                 <p><strong>Event:</strong> @Entity.Title</p>
                 <h7><strong>Start:</strong> @Entity.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</h7>
                 <p><strong>Price:</strong> @Entity.TicketPrice €</p>
+
                 
+            </div>
+            <div class="card-footer">
+                <p class="text-muted">Note: You will be redirected to the payment provider's page to complete the transaction.</p>
                 <button class="btn btn-success" @onclick="StartCheckout">Make Payment</button>
             </div>
-        </div>
-    </div>
-
-
-
-    <h4 class="mt-5 text-center text-white">@Entity.Title</h4>
-    <div class="mt-5">
-        <img src="@(string.IsNullOrWhiteSpace(Entity.ImageUrl) ? Placeholder.ImageUrl : Entity.ImageUrl)" alt="Event Image" class="img-fluid" />
-        <div style="padding-bottom: 100px;">
-            <pre style="white-space: pre-wrap; word-wrap: break-word;"><strong>Details:</strong> @Entity.Details</pre>
-        </div>
-        <div class="my-3 bg-transparent20">
-            <h5 class="mt-5 text-white text-center">Attendees</h5>
-            @* <AttendeesComponent Users="@Entity.Attendees" /> *@
         </div>
     </div>
 }
 
 
-
-
 @code {
     [CascadingParameter] AppState? App { get; set; }
-    
+
     [Parameter] public Guid EventId { get; set; }
 
     EventDto? Entity { get; set; } = new();
 
     string? Title = string.Empty;
+    string? SubTitle = string.Empty;
 
     bool IsProcessing { get; set; } = true;
 
@@ -62,14 +55,14 @@ else
         if (!result.Success || result.Data is null) return;
 
         Entity = result.Data;
-        Title = $"Payment - {Entity.Title}";
+        Title = "Payment";
+        SubTitle = $"{App!.CurrentUser.Name} - {App.CurrentUser.Email}";
         IsProcessing = false;
     }
 
-
     async Task StartCheckout()
     {
-
+        var checkoutUrl = await PaymentService.CreateCheckoutSessionAsync(App!.CurrentUser.Email, Entity!, Navigation.BaseUri, Navigation.Uri);
+        if (!string.IsNullOrWhiteSpace(checkoutUrl)) Navigation.NavigateTo(checkoutUrl, true);
     }
-
 }

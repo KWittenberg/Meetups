@@ -1,5 +1,4 @@
 ﻿global using Meetups.Data;
-global using Meetups.Data.Configurations;
 global using Meetups.DTOs;
 global using Meetups.Entities;
 global using Meetups.Enums;
@@ -19,6 +18,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Processing;
+global using Stripe.Checkout;
 global using System.ComponentModel.DataAnnotations;
 global using System.Security.Claims;
 global using System.Text.Json.Serialization;
