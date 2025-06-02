@@ -20,6 +20,6 @@
     {
         var session = await PaymentService.GetCheckoutSessionAsync(CheckoutSessionId);
 
-        Navigation.NavigateTo($"/rsvp/{EventId}/{session.PaymentIntentId}/{session.PaymentIntent.Status}");
+        Navigation.NavigateTo($"/rsvp/{EventId}/{session.PaymentIntentId}/{session.PaymentStatus}");
     }
 }

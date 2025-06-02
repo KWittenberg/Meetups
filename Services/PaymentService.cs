@@ -60,4 +60,25 @@ public class PaymentService(IConfiguration configuration) : IPaymentService
 
         return session.Url;
     }
+
+    public async Task<Refund> CreateRefundAsync(RsvpDto input)
+    {
+        var options = new RefundCreateOptions
+        {
+            PaymentIntent = input.PaymentId,
+            Reason = "requested_by_customer",
+            //Metadata = new Dictionary<string, string>
+            //{
+            //    { "user_email", input.User.Email },
+            //    { "event_id", input.Event.Id.ToString() },
+            //    { "event_title", input.Event.Title }
+            //}
+        };
+
+        StripeConfiguration.ApiKey = stripeApiKey;
+        var refundService = new RefundService();
+        var refund = await refundService.CreateAsync(options);
+
+        return refund;
+    }
 }

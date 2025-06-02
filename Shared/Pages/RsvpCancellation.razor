@@ -1,0 +1,46 @@
+﻿@page "/rsvp-cancellation/{rsvpId:guid}"
+
+@inject IRsvpRepository RsvpRepository
+
+
+<h3>Rsvp Cancellation</h3>
+
+@if (RsvpId != Guid.Empty && Entity is not null)
+{
+    <div class="alert alert-success" role="alert">
+        Your Rsvp for the Event <strong>@Entity.Event?.Title</strong> hes been success cancelled.
+    </div>
+
+    @if (Entity.RefundStatus == RefundStatus.Succeeded)
+    {
+        <div class="alert alert-info" role="alert">
+            Your refund has been requested. The refund status is: <strong>@Entity.RefundStatus.ToString()</strong>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        An error occured while cancelling your Rsvp for the Event <strong>@Entity?.Event?.Title</strong>. Please try again later.
+    </div>
+}
+
+
+
+@code {
+    [Parameter] public Guid RsvpId { get; set; } = Guid.Empty;
+
+    RsvpDto? Entity;
+
+    
+    
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await RsvpRepository.GetByIdAsync(RsvpId);
+        if (!result.Success || result.Data is null) return;
+
+        Entity = result.Data;
+    }
+
+}

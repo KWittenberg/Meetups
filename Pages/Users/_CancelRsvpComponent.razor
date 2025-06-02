@@ -1,0 +1,66 @@
+﻿@inject AppState App
+@inject IRsvpRepository RsvpRepository
+@inject NavigationManager Navigation
+
+
+<button class="btn btn-danger btn-sm" @onclick="CancelRsvp">Cancel Rsvp</button>
+
+<ConfirmDialogComponent @ref="ConfirmDialog" />
+
+
+
+
+
+
+@code {
+    [Parameter] public Guid EventId { get; set; }
+
+    ConfirmDialogComponent? ConfirmDialog;
+
+
+
+
+    async Task CancelRsvp()
+    {
+        if (EventId != Guid.Empty)
+        {
+            ConfirmDialog?.Show("Are You sure you want to Cancel your RSVP for this event?", async () =>
+            {
+                var rsvpId = await RsvpRepository.CancelAsync(App.CurrentUser.Id, EventId);
+
+                Navigation.NavigateTo($"/rsvp-cancellation/{rsvpId}", true);
+
+
+
+
+
+
+
+                // Navigation.NavigateTo($"/payment/{Entity.Id}", true);
+                // else Navigation.NavigateTo($"/rsvp/{Entity?.Id}", true);
+
+
+
+
+
+                // Old Logic directly from the original code
+                // var email = AuthenticationState?.User.FindFirst(x => x.Type == ClaimTypes.Email)?.Value;
+
+                // var result = await RsvpRepository.AddAsync(email, Entity!.Id);
+                // if (result.Success) Navigation.NavigateTo($"/event/{Entity.Id}", true);
+                // else
+                // {
+                //     StateHasChanged();
+                // }
+                // await App!.ShowToast(result.Message, result.Success ? "success" : "error");
+            });
+        }
+
+
+
+
+        
+    }
+}
+
+}

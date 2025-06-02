@@ -22,7 +22,8 @@
                 <div class="text-end">
                     @if (item.Start > DateTime.Now)
                     {
-                        <button class="btn btn-danger btn-sm">Cancel Rsvp</button>
+                        @* <button class="btn btn-danger btn-sm">Cancel Rsvp</button> *@
+                        <_CancelRsvpComponent EventId="@item.Id" />
                     }
                     else if (item.Start <= DateTime.Now)
                     {
@@ -45,6 +46,4 @@
     [Parameter] public string? Title { get; set; }
 
     [Parameter] public string? Error { get; set; }
-
-
 }

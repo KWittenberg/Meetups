@@ -2,8 +2,27 @@
 
 namespace Meetups.Repository;
 
-public class RsvpRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : IRsvpRepository
+public class RsvpRepository(IDbContextFactory<ApplicationDbContext> contextFactory, IPaymentService paymentService) : IRsvpRepository
 {
+    public async Task<Result<RsvpDto>> GetByIdAsync(Guid id)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync();
+
+        try
+        {
+            var entity = await db.Rsvps.Include(x => x.Event).FirstOrDefaultAsync(x => x.Id == id);
+            if (entity is null) return Result<RsvpDto>.Error("Rsvp not found!");
+
+            return Result<RsvpDto>.Ok(entity.ToDto());
+        }
+        catch (Exception ex)
+        {
+            return Result<RsvpDto>.Error($"Database error: {ex.Message}");
+        }
+    }
+
+
+
     public async Task<Result> AddAsync(string? email, Guid eventId, string? paymentId, string? paymentStatus)
     {
         await using var db = await contextFactory.CreateDbContextAsync();
@@ -40,6 +59,39 @@ public class RsvpRepository(IDbContextFactory<ApplicationDbContext> contextFacto
             return Result.Error($"Database error: {ex.Message}");
         }
     }
+
+    public async Task<Result<Guid>> CancelAsync(Guid userId, Guid eventId)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync();
+
+        try
+        {
+            var rsvp = await db.Rsvps.Include(x => x.Event)
+                                        .Where(x => x.EventId == eventId && x.UserId == userId && x.Status == RsvpStatus.Going)
+                                        .FirstOrDefaultAsync();
+
+            if (rsvp is null) return Result<Guid>.Error("Not found Rsvped for this event!");
+
+            rsvp.Status = RsvpStatus.Canceled;
+
+            if (rsvp.Event is not null && rsvp.Event.TicketPrice > 0 && rsvp.Event.Refundable)
+            {
+                var refund = await paymentService.CreateRefundAsync(rsvp.ToDto());
+
+                rsvp.RefundId = refund.Id;
+                rsvp.RefundStatus = refund.Status.FromRefundString();
+            }
+
+            await db.SaveChangesAsync();
+
+            return Result<Guid>.Ok(rsvp.Id, "Rsvp Canceled!");
+        }
+        catch (Exception ex)
+        {
+            return Result<Guid>.Error($"Database error: {ex.Message}");
+        }
+    }
+
 
 
     //public async Task<Result> AddAsync(string? email, Guid eventId)
