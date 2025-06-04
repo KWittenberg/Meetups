@@ -9,12 +9,35 @@
 
     .card img {
         border-radius: 0.5rem;
+        z-index: 1;
     }
 
     .card .card-body {
         margin-top: -1rem;
+        border-radius: 0.5rem;
+        background-color: rgba(0,0,0,0.2);
+        z-index: 0;
     }
+
+.info-days {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    z-index: 2;
+}
+
+.info-type {
+    position: absolute;
+    left: 0.5rem;
+    top: 0.5rem;
+    z-index: 2;
+}
 
 .card-subtitle {
     color: black;
+}
+
+.card-title {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
 }

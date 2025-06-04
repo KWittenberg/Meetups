@@ -31,7 +31,9 @@ public static class EventMapping
             Recurrence = entity.Recurrence,
             OrganizerId = entity.OrganizerId,
             TicketPrice = entity.TicketPrice,
-            Refundable = entity.Refundable
+            Refundable = entity.Refundable,
+            Rsvps = entity.Rsvps.Select(r => r.ToDto()).ToList()
+            //Comments = entity.Comments?.Select(c => c.ToDto()).ToList()
         };
     }
 

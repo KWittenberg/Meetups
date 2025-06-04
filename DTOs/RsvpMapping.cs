@@ -20,7 +20,25 @@ public static class RsvpMapping
         {
             Id = entity.Id,
             EventId = entity.EventId,
-            Event = entity.Event?.ToDto(),
+            Event = entity.Event?.ToDto(), // Problem ciklično učitavanje
+            //Event = entity.Event != null ? new EventDto
+            //{
+            //    Id = entity.Event.Id,
+            //    ImageUrl = entity.Event.ImageUrl,
+            //    Title = entity.Event.Title,
+            //    Details = entity.Event.Details,
+            //    Location = entity.Event.Location,
+            //    MeetupLink = entity.Event.MeetupLink,
+            //    Category = entity.Event.Category,
+            //    Capacity = entity.Event.Capacity,
+            //    Start = entity.Event.Start,
+            //    End = entity.Event.End,
+            //    AllDay = entity.Event.AllDay,
+            //    Recurrence = entity.Event.Recurrence,
+            //    OrganizerId = entity.Event.OrganizerId,
+            //    TicketPrice = entity.Event.TicketPrice,
+            //    Refundable = entity.Event.Refundable
+            //} : null,
             UserId = entity.UserId,
             User = entity.User?.ToDto(),
             RsvpDate = entity.RsvpDate,
@@ -29,6 +47,7 @@ public static class RsvpMapping
             PaymentStatus = entity.PaymentStatus,
             RefundId = entity.RefundId,
             RefundStatus = entity.RefundStatus
+            // Ne uključuj Rsvps i Comments kako bi se izbjegao ciklus
         };
     }
 

@@ -1,6 +1,5 @@
 ﻿@page "/"
 
-@inherits BaseComponent
 @inject IEventRepository Repository
 @inject NavigationManager Navigation
 
@@ -18,12 +17,40 @@ else
             {
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                     <a href="event/@item.Id">
-                        <div class="card">
+                        <div class="card position-relative">
+                            <h7 class="info-type badge bg-light-subtle">
+                                @if (@item.Category == "Online")
+                                {
+                                    <text>Online</text>
+                                }
+                                else
+                                {
+                                    <text>In Person</text>
+                                }
+                            </h7>
+                            <h7 class="info-days badge bg-danger">
+                                @if (item.Start > DateTime.Now)
+                                {
+                                    var daysLeft = (item.Start - DateTime.Now).Days;
+                                    <text>@daysLeft days left</text>
+                                }
+                            </h7>
+                            
                             <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? Placeholder.ImageUrl : item.ImageUrl)" />
+                            
                             <div class="card-body">
                                 <h7 class="card-subtitle">@item.Start.ToString("dddd - dd. MMMM. yyyy. u HH:mm'h'")</h7>
                                 <h6 class="card-title">@item.Title</h6>
+                            </div>
 
+                            <div class="card-footer">
+                                <h7 class="card-subtitle">Attenders</h7>
+                                <ul>
+                                    @foreach (var rsvp in item.Rsvps.Where(r => r.Status == RsvpStatus.Going))
+                                    {
+                                        <li>@rsvp.User.Name</li>
+                                    }
+                                </ul>
                             </div>
                         </div>
                     </a>
@@ -39,10 +66,11 @@ else
 
     List<EventDto>? Entities;
 
-    const string Title = "Discover Events";
+    const string Title = "Meetups";
 
     bool IsProcessing { get; set; } = true;
 
+    
 
     protected override async Task OnParametersSetAsync()
     {
