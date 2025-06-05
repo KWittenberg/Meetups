@@ -79,6 +79,10 @@ public static class Endpoints
 
         var emailClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
         var nameClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+        var firstNameClaim = context.User.FindFirst("given_name");
+        var lastNameClaim = context.User.FindFirst("family_name");
+        var pictureClaim = context.User.FindFirst("picture");
+
         if (emailClaim is not null && nameClaim is not null)
         {
             await using var dbContext = contextFactory.CreateDbContext();
@@ -90,15 +94,22 @@ public static class Endpoints
                 {
                     Name = nameClaim.Value,
                     Email = emailClaim.Value,
+                    FirstName = firstNameClaim?.Value,
+                    LastName = lastNameClaim?.Value,
+                    ImageUrl = pictureClaim?.Value,
                     Role = isOrganizer ? ApplicationRole.Organizer : ApplicationRole.Attendee
                 };
 
                 dbContext.Users.Add(user);
                 await dbContext.SaveChangesAsync();
+                existingUser = user;
             }
             else
             {
                 if (existingUser.Name != nameClaim.Value) existingUser.Name = nameClaim.Value;
+                if (existingUser.FirstName != firstNameClaim?.Value) existingUser.FirstName = firstNameClaim?.Value;
+                if (existingUser.LastName != lastNameClaim?.Value) existingUser.LastName = lastNameClaim?.Value;
+                if (existingUser.ImageUrl != pictureClaim?.Value) existingUser.ImageUrl = pictureClaim?.Value;
 
                 //var expectedRole = isOrganizer ? ApplicationRole.Organizer : ApplicationRole.Attendee;
                 //if (existingUser.Role != expectedRole) existingUser.Role = expectedRole;

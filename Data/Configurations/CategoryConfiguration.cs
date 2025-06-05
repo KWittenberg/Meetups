@@ -10,8 +10,10 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 
         builder.Property(x => x.Name).HasMaxLength(50).IsRequired();
 
+        builder.HasIndex(x => x.Name).IsUnique();
+
         builder.Property(x => x.Description).HasMaxLength(200);
 
-        builder.Property(x => x.IconHtml).HasMaxLength(200);
+        builder.Property(x => x.Icon).HasMaxLength(50);
     }
 }

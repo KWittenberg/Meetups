@@ -16,4 +16,6 @@ public class Address : BaseEntity<Guid>
     public double? Latitude { get; set; }
 
     public double? Longitude { get; set; }
+
+    public string? PlaceId { get; set; }
 }

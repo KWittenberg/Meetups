@@ -28,6 +28,10 @@ public static class InitialServices
                 options.ClientId = configuration["Google:ClientId"] ?? throw new InvalidOperationException("Google ClientId not found in configuration.");
                 options.ClientSecret = configuration["Google:ClientSecret"] ?? throw new InvalidOperationException("Google ClientSecret not found in configuration.");
 
+                options.ClaimActions.MapJsonKey("picture", "picture");
+                options.ClaimActions.MapJsonKey("given_name", "given_name");
+                options.ClaimActions.MapJsonKey("family_name", "family_name");
+
                 options.Events = new OAuthEvents
                 {
                     OnTicketReceived = async context =>

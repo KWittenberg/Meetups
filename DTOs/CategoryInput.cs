@@ -6,5 +6,5 @@ public class CategoryInput
 
     public string? Description { get; set; }
 
-    public string? IconHtml { get; set; }
+    public string? Icon { get; set; }
 }

@@ -20,7 +20,7 @@ public static class CategoryMapping
             Id = entity.Id,
             Name = entity.Name,
             Description = entity.Description,
-            IconHtml = entity.IconHtml
+            Icon = entity.Icon
         };
     }
 
@@ -33,7 +33,7 @@ public static class CategoryMapping
         {
             Name = input.Name,
             Description = input.Description,
-            IconHtml = input.IconHtml
+            Icon = input.Icon
         };
     }
 
@@ -44,7 +44,7 @@ public static class CategoryMapping
 
         entity.Name = input.Name;
         entity.Description = input.Description;
-        entity.IconHtml = input.IconHtml;
+        entity.Icon = input.Icon;
     }
 
     // UI -> 
@@ -56,7 +56,7 @@ public static class CategoryMapping
         {
             Name = dto.Name,
             Description = dto.Description,
-            IconHtml = dto.IconHtml
+            Icon = dto.Icon
         };
     }
 }
