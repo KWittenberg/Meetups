@@ -6,10 +6,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     // public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor contextAccessor) : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
 
 
-    public DbSet<Event> Events { get; set; } = null!;
+    public DbSet<Address> Addresses { get; set; } = null!;
+    public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Event> Events { get; set; } = null!;
     public DbSet<Rsvp> Rsvps { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
 
 
 

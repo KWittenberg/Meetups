@@ -1,24 +1,51 @@
-﻿@if (Users is not null && Users.Count > 0)
+﻿@if (Attenders is not null && Attenders.Count > 0)
 {
-    <div class="container">
-    <div class="row g-3">
-        @foreach (var user in Users)
+    <div class="d-flex align-items-center">
+        @foreach (var user in Attenders.Take(5))
         {
-            <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                <div class="card text-center bg-transparent20">
-                    <h7 class="py-2">@user.Name</h7>
-                </div>
+            <div class="attendee-avatar me-1" title="@user.User.Name">
+                @if (!string.IsNullOrWhiteSpace(user.User.ImageUrl))
+                {
+                    <img src="@user.User.ImageUrl" alt="@user.User.Name" class="rounded-circle attendee-img" />
+                }
+                else
+                {
+                    <div class="attendee-initials rounded-circle">
+                        @GetInitials(user.User.Name)
+                    </div>
+                }
             </div>
         }
+        @if (Attenders.Count > 5)
+        {
+            <span class="ms-2 attendee-more">i @((Attenders.Count - 2)) prijatelja</span>
+        }
+        else if (Attenders.Count > 2)
+        {
+            <span class="ms-2 attendee-names">@string.Join(", ", Attenders.Skip(2).Select(u => u.User.Name))</span>
+        }
     </div>
+    <div class="attendee-names mt-1">
+        @string.Join(", ", Attenders.Take(2).Select(u => u.User.Name))
     </div>
 }
 else
 {
-    <p>No attendees found.</p>
+    <p>No attendees so far...</p>
 }
 
 
 @code {
-    [Parameter] public List<UserDto>? Users { get; set; }
+    [Parameter] public List<RsvpDto>? Attenders { get; set; }
+
+    
+    private string GetInitials(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "?";
+        
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 1) return parts[0].Substring(0, 1).ToUpper();
+        
+        return (parts[0].Substring(0, 1) + parts[^1].Substring(0, 1)).ToUpper();
+    }
 }

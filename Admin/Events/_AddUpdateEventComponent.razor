@@ -1,13 +1,13 @@
-﻿<EditForm Model="Input" OnValidSubmit="HandleValidSubmit">
+﻿@* <EditForm Model="Input" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
-    @* <ValidationSummary /> *@
+    @* <ValidationSummary /> 
 
     @if (Input.ImageUrl is null)
     {
         <div class="form-group">
             <label>CoverImage</label>
             <InputFile class="form-control" OnChange="HandleImageChange" accept=".jpg" />
-            @* <ValidationMessage For="() => Input.CoverImage" /> *@
+            @* <ValidationMessage For="() => Input.CoverImage" /> 
         </div>
     }
     else
@@ -82,7 +82,7 @@
             </div>
         </div>
     </div>
-</EditForm>
+</EditForm>*@
 
 @code {
     [Parameter] public EventInput? Input { get; set; } = new ();
@@ -104,3 +104,4 @@
         await OnValidSubmit.InvokeAsync(Input);
     }
 }
+ 

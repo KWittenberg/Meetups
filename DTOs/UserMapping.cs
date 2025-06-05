@@ -20,8 +20,9 @@ public static class UserMapping
             Id = entity.Id,
             Name = entity.Name,
             Email = entity.Email,
+            ImageUrl = entity.ImageUrl,
             Role = entity.Role,
-            Rsvps = entity.Rsvps?.ToDtoList() ?? new List<RsvpDto>()
+            // Rsvps = entity.Rsvps?.ToDtoList() ?? new List<RsvpDto>()
         };
     }
 
@@ -34,6 +35,7 @@ public static class UserMapping
         {
             Name = input.Name,
             Email = input.Email,
+            ImageUrl = null,
             Role = input.Role
         };
     }
@@ -45,6 +47,7 @@ public static class UserMapping
 
         entity.Name = input.Name;
         entity.Email = input.Email;
+        entity.ImageUrl = input.ImageUrl;
         entity.Role = input.Role;
     }
 
@@ -57,6 +60,7 @@ public static class UserMapping
         {
             Name = dto.Name,
             Email = dto.Email,
+            ImageUrl = dto.ImageUrl,
             Role = dto.Role
         };
     }

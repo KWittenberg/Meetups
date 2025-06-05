@@ -31,7 +31,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
         try
         {
-            var entities = await db.Events.AsNoTracking().Where(x => x.OrganizerId == organizerId).ToListAsync();
+            var entities = await db.Events.AsNoTracking().Where(x => x.UserId == organizerId).ToListAsync();
             if (!entities.Any()) return Result<List<EventDto>>.Error("Event not found!");
 
             return Result<List<EventDto>>.Ok(entities.ToDtoList());
@@ -185,11 +185,11 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
         //errorMessage = input.ValidateDate();
         //if (!string.IsNullOrWhiteSpace(errorMessage)) return errorMessage;
 
-        errorMessage = input.ValidateLocation();
-        if (!string.IsNullOrWhiteSpace(errorMessage)) return errorMessage;
+        //errorMessage = input.ValidateLocation();
+        //if (!string.IsNullOrWhiteSpace(errorMessage)) return errorMessage;
 
-        errorMessage = input.ValidateMeetupLink();
-        if (!string.IsNullOrWhiteSpace(errorMessage)) return errorMessage;
+        //errorMessage = input.ValidateMeetupLink();
+        //if (!string.IsNullOrWhiteSpace(errorMessage)) return errorMessage;
 
 
         return string.Empty;
@@ -321,11 +321,6 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
         try
         {
-            //var entities = await db.Events.AsNoTracking()
-            //                                .Where(x => x.Start >= DateTime.Now && (string.IsNullOrEmpty(filter) || x.Title.Contains(filter) || x.Description.Contains(filter) || x.Location.Contains(filter)))
-            //                                .OrderByDescending(x => x.Start)
-            //                                .ToListAsync();
-
             var entities = await SearchEvents(filter, db);
             if (!string.IsNullOrWhiteSpace(filter) && entities.Count == 0)
             {
@@ -334,48 +329,7 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
             }
             if (!entities.Any()) return Result<List<EventDto>>.Error("Event not found!");
 
-            // var output = entities.ToDtoList();
-            var output = entities.Select(e => new EventDto
-            {
-                Id = e.Id,
-                ImageUrl = e.ImageUrl,
-                Title = e.Title,
-                Details = e.Details,
-                Location = e.Location,
-                MeetupLink = e.MeetupLink,
-                Category = e.Category,
-                Capacity = e.Capacity,
-                Start = e.Start,
-                End = e.End,
-                AllDay = e.AllDay,
-                Recurrence = e.Recurrence,
-                OrganizerId = e.OrganizerId,
-                TicketPrice = e.TicketPrice,
-                Refundable = e.Refundable,
-                Rsvps = e.Rsvps
-                    .Where(r => r.Status == RsvpStatus.Going && r.User != null)
-                    .Select(r => new RsvpDto
-                    {
-                        Id = r.Id,
-                        EventId = r.EventId,
-                        UserId = r.UserId,
-                        User = new UserDto
-                        {
-                            Id = r.User.Id,
-                            Name = r.User.Name,
-                            Email = r.User.Email
-                        },
-                        RsvpDate = r.RsvpDate,
-                        Status = r.Status,
-                        PaymentId = r.PaymentId,
-                        PaymentStatus = r.PaymentStatus,
-                        RefundId = r.RefundId,
-                        RefundStatus = r.RefundStatus
-                    }).ToList(),
-                // Comments = entity.Comments?.Select(c => c.ToDto()).ToList() ?? new List<CommentDto>()
-            }).ToList();
-
-            return Result<List<EventDto>>.Ok(output);
+            return Result<List<EventDto>>.Ok(entities.ToDtoList());
         }
         catch (Exception ex)
         {
@@ -385,25 +339,13 @@ public class EventRepository(IDbContextFactory<ApplicationDbContext> dbFactory, 
 
     private static async Task<List<Event>> SearchEvents(string? filter, ApplicationDbContext db)
     {
-        //var events = await db.Events.AsNoTracking()
-        //    .Include(e => e.Rsvps)
-        //    .ThenInclude(r => r.User)
-        //    .Include(e => e.Comments)
-        //    .Where(x => x.Start >= DateTime.Now && (string.IsNullOrEmpty(filter) || x.Title.Contains(filter) || x.Details.Contains(filter) || x.Location.Contains(filter)))
-        //    .OrderBy(x => x.Start)
-        //    .ToListAsync();
-
-
-
-
-        var query = await db.Events.AsNoTracking()
-            // .Include(x => x.Rsvps)
-            .Include(x => x.Rsvps.Where(r => r.Status == RsvpStatus.Going))
-            .ThenInclude(r => r.User)
-            //.Include(x => x.Comments)
-            .Where(x => x.Start >= DateTime.Now && (string.IsNullOrEmpty(filter) || x.Title.Contains(filter) || x.Details.Contains(filter) || x.Location.Contains(filter)))
-            .OrderBy(x => x.Start)
-            .ToListAsync();
+        var query = await db.Events.AsNoTracking() // .Include(x => x.Rsvps)
+                                    .Include(x => x.Rsvps.Where(r => r.Status == RsvpStatus.Going))
+                                    .ThenInclude(r => r.User)
+                                    //.Include(x => x.Comments)
+                                    .Where(x => x.Start >= DateTime.Now && (string.IsNullOrEmpty(filter) || x.Title.Contains(filter) || x.Details.Contains(filter)))
+                                    .OrderBy(x => x.Start)
+                                    .ToListAsync();
 
         return query;
     }

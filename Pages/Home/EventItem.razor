@@ -67,12 +67,15 @@ else
                     
                     <p><strong>Category:</strong> @Entity.Category</p>
 
-                    @if (Entity.Category == MeetupCategories.InPerson.ToString())
+                    @if (Entity.LocationType == LocationType.Physical)
                     {
-                        <h7><strong>Location:</strong> @Entity.Location</h7>
+                        <h7><strong>Location:</strong></h7>
+                        <h7>@Entity.Address.Country</h7>
+                        <h7>@Entity.Address.Zip @Entity.Address.City @Entity.Address.Street</h7>
+                        <h7>@Entity.Address.Latitude @Entity.Address.Longitude</h7>
                         
                     }
-                    else if (Entity.Category == MeetupCategories.Online.ToString())
+                    else if (Entity.LocationType == LocationType.Online)
                     {
                         <h7><strong>MeetupLink:</strong> <a href="@Entity.MeetupLink" class="text-decoration-none" target="_blank">@Entity.MeetupLink</a></h7>
                     }

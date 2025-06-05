@@ -36,7 +36,7 @@ public record RoleDto(Guid Id, string Name);
 
 
 // CATEGORY
-public record CategoryDto(Guid Id, string Name, string? Description, string? IconHtml);
+// public record CategoryDto(Guid Id, string Name, string? Description, string? IconHtml);
 
 
 

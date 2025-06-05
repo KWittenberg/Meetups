@@ -19,7 +19,7 @@ else
                     <a href="event/@item.Id">
                         <div class="card position-relative">
                             <h7 class="info-type badge bg-light-subtle">
-                                @if (@item.Category == "Online")
+                                @if (@item.LocationType == LocationType.Online)
                                 {
                                     <text>Online</text>
                                 }
@@ -45,12 +45,13 @@ else
 
                             <div class="card-footer">
                                 <h7 class="card-subtitle">Attenders</h7>
-                                <ul>
-                                    @foreach (var rsvp in item.Rsvps.Where(r => r.Status == RsvpStatus.Going))
+                                @* <ul>
+                                    @foreach (var rsvp in item.Rsvps)
                                     {
                                         <li>@rsvp.User.Name</li>
                                     }
-                                </ul>
+                                </ul> *@
+                                <AttendeesComponent Attenders="@item.Rsvps" />
                             </div>
                         </div>
                     </a>

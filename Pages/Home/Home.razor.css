@@ -4,7 +4,9 @@
 
 .card {
     border: 0;
+    border-radius: 0.5rem;
     background: transparent;
+    z-index: 3;
 }
 
     .card img {
@@ -14,9 +16,14 @@
 
     .card .card-body {
         margin-top: -1rem;
-        border-radius: 0.5rem;
+        /*border-radius: 0.5rem;*/
         background-color: rgba(0,0,0,0.2);
         z-index: 0;
+    }
+
+    .card .card-footer {
+        border: 0;
+        background-color: rgba(0,0,0,0.2);
     }
 
 .info-days {

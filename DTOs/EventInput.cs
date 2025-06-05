@@ -1,54 +1,65 @@
-﻿namespace Meetups.DTOs;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Meetups.DTOs;
 
 public class EventInput
 {
-    [StringLength(maximumLength: 200)]
-    public string? ImageUrl { get; set; }
+    public Guid UserId { get; set; }
+
+    public Guid? CategoryId { get; set; }
 
 
+
+    // Info
     [Required]
     [StringLength(maximumLength: 100)]
     public string Title { get; set; } = string.Empty;
 
+    [StringLength(maximumLength: 200)]
+    public string? ImageUrl { get; set; }
 
     [StringLength(maximumLength: 4000)]
     public string? Details { get; set; }
 
 
-    [StringLength(maximumLength: 200)]
-    public string? Location { get; set; }
+    // DateTime and Capacity
+    public DateTime Start { get; set; }
+
+    public DateTime End { get; set; }
+
+    public bool AllDay { get; set; }
+
+    public Recurrence Recurrence { get; set; } = Recurrence.OneTime;
+
+    [Range(0, int.MaxValue)]
+    public int? Capacity { get; set; }
+
+
+
+    // Location
+    public LocationType LocationType { get; set; }
+
+    public Guid? AddressId { get; set; }
 
 
     [StringLength(maximumLength: 200)]
     public string? MeetupLink { get; set; }
 
 
-    [StringLength(maximumLength: 100)]
-    public string? Category { get; set; }
 
-
-    [Range(0, int.MaxValue)]
-    public int Capacity { get; set; }
-
-
-    public DateTime Start { get; set; } = DateTime.Now;
-
-    public DateTime End { get; set; } = DateTime.Now.AddMinutes(30);
-
-
-    public bool AllDay { get; set; }
-
-    public Recurrence Recurrence { get; set; } = Recurrence.OneTime;
-
-    public Guid? OrganizerId { get; set; }
-
-
-
-
-    [Range(0, double.MaxValue)]
+    // Price
+    [Range(0, 9999999.99)]
+    [Column(TypeName = "decimal(9, 2)")]
     public decimal? TicketPrice { get; set; }
 
     public bool Refundable { get; set; }
+
+
+
+
+
+
+
 
 
 
@@ -83,17 +94,17 @@ public class EventInput
     //    return string.Empty;
     //}
 
-    public string? ValidateLocation()
-    {
-        if (Category == MeetupCategories.InPerson.ToString() && string.IsNullOrWhiteSpace(Location)) return "Location is required for In-Person Meetup!";
+    //public string? ValidateLocation()
+    //{
+    //    if (Category == MeetupCategories.InPerson.ToString() && string.IsNullOrWhiteSpace(Location)) return "Location is required for In-Person Meetup!";
 
-        return string.Empty;
-    }
+    //    return string.Empty;
+    //}
 
-    public string? ValidateMeetupLink()
-    {
-        if (Category == MeetupCategories.Online.ToString() && string.IsNullOrWhiteSpace(MeetupLink)) return "The Meetup Link is required for Online Meetups!";
+    //public string? ValidateMeetupLink()
+    //{
+    //    if (Category == MeetupCategories.Online.ToString() && string.IsNullOrWhiteSpace(MeetupLink)) return "The Meetup Link is required for Online Meetups!";
 
-        return string.Empty;
-    }
+    //    return string.Empty;
+    //}
 }

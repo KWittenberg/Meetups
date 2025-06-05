@@ -49,29 +49,28 @@
                 }
 
                 <div class="mt-3 form-group">
-                    <label>Category</label>
-                    <InputSelect class="form-select" @bind-Value="@Input.Category">
-                        <option value="">Select Category</option>
-                        @foreach (var item in Categories())
+                    <label>Location Type</label>
+                    <InputSelect class="form-select" @bind-Value="@Input.LocationType">
+                        <option value="">Select Location Type</option>
+                        @foreach (var item in LocationTypes())
                         {
                             <option value="@item">@item</option>
                         }
                     </InputSelect>
-                    <ValidationMessage For="() => Input.Category" />
                 </div>
 
-                @if (Input.Category == MeetupCategories.InPerson.ToString())
+                @if (Input.LocationType == LocationType.Physical)
                 {
                     Input.MeetupLink = string.Empty;
                     <div class="form-group">
                         <label>Location</label>
-                        <InputText class="form-control" @bind-Value="@Input.Location" />
-                        <ValidationMessage For="() => Input.Location" />
+                        @* <InputText class="form-control" @bind-Value="@Input.Location" />
+                        <ValidationMessage For="() => Input.Location" /> *@
                     </div>
                 }
-                else if (Input.Category == MeetupCategories.Online.ToString())
+                else if (Input.LocationType == LocationType.Online)
                 {
-                    Input.Location = string.Empty;
+                    Input.AddressId = null;
                     <div class="form-group">
                         <label>MeetupLink</label>
                         <InputText class="form-control" @bind-Value="@Input.MeetupLink" />
@@ -156,9 +155,9 @@
 
     [Parameter] public Guid? Id { get; set; }
 
-    List<string> Categories() => Enum.GetNames(typeof(MeetupCategories)).ToList();
+    List<string> LocationTypes() => Enum.GetNames(typeof(LocationType)).ToList();
     List<string> Recurrences() => Enum.GetNames(typeof(Recurrence)).ToList();
-    
+
     EventInput? Input { get; set; } = new();
 
     ImageData? ImageData { get; set; } = new();
@@ -166,14 +165,14 @@
     string Title => Id is not null ? "Update Event" : "Add Event";
 
 
-    
+
 
     protected override async Task OnParametersSetAsync()
     {
         if (Id is null)
         {
             Input = new EventInput();
-            Input.OrganizerId = App!.CurrentUser.Id;
+            Input.UserId = App!.CurrentUser.Id;
         }
         else await LoadData();
     }
@@ -182,7 +181,7 @@
     {
         var result = await Repository.GetByIdAsync(Id!.Value);
         if (!result.Success || result.Data is null) return;
-        if (result.Data.OrganizerId != App!.CurrentUser.Id)
+        if (result.Data.UserId != App!.CurrentUser.Id)
         {
             Navigation.NavigateTo("/Account/AccessDenied");
             return;
@@ -226,7 +225,7 @@
     async Task HandleValidSubmit()
     {
         ArgumentNullException.ThrowIfNull(Input);
-        
+
         var result = Id is null
             ? await Repository.AddAsync(ImageData!, Input)
             : await Repository.UpdateAsync(Id.Value, Input, ImageData);

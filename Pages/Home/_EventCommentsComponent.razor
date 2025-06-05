@@ -15,7 +15,7 @@
                     <p class="card-title text-white">
                         @item.UserName
                         <span class="ms-2 badge text-bg-light">
-                            @(item.UserId == Event?.OrganizerId ? "Organizer" : string.Empty)
+                            @(item.UserId == Event?.UserId ? "Organizer" : string.Empty)
                         </span>
                     </p>
                     <h7 class="position-absolute top-0 end-0">@item.CreatedUtc.ToString("g")</h7>

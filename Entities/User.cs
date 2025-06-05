@@ -10,8 +10,13 @@ public class User : BaseAuditableEntity<Guid>
     public string Email { get; set; } = string.Empty;
 
 
+    [StringLength(maximumLength: 200)]
+    public string? ImageUrl { get; set; }
+
+
     [StringLength(maximumLength: 50)]
     public string? Role { get; set; }
+
 
 
 
