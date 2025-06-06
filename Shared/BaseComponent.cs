@@ -26,11 +26,24 @@ public class BaseComponent : ComponentBase
     {
         if (isAuthenticated)
         {
+            Console.WriteLine("Claims:");
+            foreach (var claim in AuthenticationState.User.Claims)
+            {
+                Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
+            }
+
+
+
             var userIdString = AuthenticationState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             App.CurrentUser.Id = Guid.TryParse(userIdString, out var userId) ? userId : Guid.Empty;
 
-            App.CurrentUser.Name = AuthenticationState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? string.Empty;
             App.CurrentUser.Email = AuthenticationState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? string.Empty;
+            App.CurrentUser.Name = AuthenticationState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? string.Empty;
+
+            App.CurrentUser.FirstName = AuthenticationState.User.Claims.FirstOrDefault(c => c.Type == "given_name")?.Value ?? string.Empty;
+            App.CurrentUser.LastName = AuthenticationState.User.Claims.FirstOrDefault(c => c.Type == "family_name")?.Value ?? string.Empty;
+            App.CurrentUser.ImageUrl = AuthenticationState.User.Claims.FirstOrDefault(c => c.Type == "picture")?.Value ?? string.Empty;
+
             App.CurrentUser.Role = AuthenticationState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
             App.CurrentUser.IsAuthenticated = true;
         }

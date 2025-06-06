@@ -43,10 +43,10 @@ public class RsvpRepository(IDbContextFactory<ApplicationDbContext> contextFacto
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 EventId = eventId,
-                RsvpDate = DateTime.Now,
                 Status = RsvpStatus.Going,
                 PaymentId = paymentId,
-                PaymentStatus = paymentStatus.FromString()
+                PaymentStatus = paymentStatus.FromString(),
+                CreatedUtc = DateTime.UtcNow
             };
 
             await db.Rsvps.AddAsync(rsvp);

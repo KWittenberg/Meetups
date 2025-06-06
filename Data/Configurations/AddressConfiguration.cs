@@ -8,6 +8,12 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
 
         builder.HasKey(x => x.Id);
 
+        builder.HasIndex(x => x.City);
+        builder.HasIndex(x => new { x.Latitude, x.Longitude });
+        builder.HasIndex(x => x.PlaceId).IsUnique();
+
+
+
         builder.Property(x => x.Country).HasMaxLength(50);
 
         builder.Property(x => x.Zip).HasMaxLength(10);
@@ -24,16 +30,10 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
         builder.Property(x => x.PlaceId).HasMaxLength(50);
 
 
-        // Check constraints
         builder.ToTable(t =>
         {
             t.HasCheckConstraint("CK_Address_Latitude", "[Latitude] IS NULL OR ([Latitude] >= -90 AND [Latitude] <= 90)");
             t.HasCheckConstraint("CK_Address_Longitude", "[Longitude] IS NULL OR ([Longitude] >= -180 AND [Longitude] <= 180)");
         });
-
-        // Indexes for faster queries
-        builder.HasIndex(x => x.City);
-        builder.HasIndex(x => new { x.Latitude, x.Longitude });
-        builder.HasIndex(x => x.PlaceId).IsUnique();
     }
 }

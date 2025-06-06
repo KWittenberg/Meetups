@@ -12,8 +12,11 @@ public class AppState()
     public void ResetCurrentUser()
     {
         currentUser.Id = Guid.Empty;
-        currentUser.Name = string.Empty;
         currentUser.Email = string.Empty;
+        currentUser.Name = string.Empty;
+        currentUser.FirstName = string.Empty;
+        currentUser.LastName = string.Empty;
+        currentUser.ImageUrl = string.Empty;
         currentUser.Role = null;
         currentUser.IsAuthenticated = false;
     }

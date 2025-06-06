@@ -92,8 +92,8 @@ public static class Endpoints
             {
                 var user = new User
                 {
-                    Name = nameClaim.Value,
                     Email = emailClaim.Value,
+                    Name = nameClaim.Value,
                     FirstName = firstNameClaim?.Value,
                     LastName = lastNameClaim?.Value,
                     ImageUrl = pictureClaim?.Value,
@@ -122,8 +122,11 @@ public static class Endpoints
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString()),
-                new Claim(ClaimTypes.Name, existingUser.Name),
                 new Claim(ClaimTypes.Email, existingUser.Email),
+                new Claim(ClaimTypes.Name, existingUser.Name),
+                new Claim("given_name", existingUser.FirstName ?? string.Empty),
+                new Claim("family_name", existingUser.LastName ?? string.Empty),
+                new Claim("picture", existingUser.ImageUrl ?? string.Empty),
                 new Claim(ClaimTypes.Role, existingUser.Role ?? ApplicationRole.Attendee)
             };
 

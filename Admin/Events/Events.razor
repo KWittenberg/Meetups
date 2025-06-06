@@ -31,10 +31,10 @@ else
                 {
                     
                     @* <PropertyColumn Property="x => x.Details" Title="Details" Align="Align.Center" Sortable="true" /> *@
-                    <PropertyColumn Property="x => x.Location" Title="Location" Align="Align.Center" Sortable="true" />
+                    <PropertyColumn Property="x => x.LocationType" Title="Location" Align="Align.Center" Sortable="true" />
                     <PropertyColumn Property="x => x.MeetupLink" Title="MeetupLink" Align="Align.Center" Sortable="true" />
                     <PropertyColumn Property="x => x.AllDay" Title="AllDay" Align="Align.Center" Sortable="true" />
-                    <PropertyColumn Property="x => x.OrganizerId" Title="Organizer" Align="Align.Center" Sortable="true" />
+                    <PropertyColumn Property="x => x.User.Name" Title="Organizer" Align="Align.Center" Sortable="true" />
                 }
                 <TemplateColumn Title="Actions" Align="Align.Center">
                     <a class="me-2" href="event/@context.Id" data-toggle="tooltip" title="View" target="_blank"><i class="bi bi-eye"></i></a>

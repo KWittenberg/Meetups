@@ -25,5 +25,5 @@ public class Comment : BaseEntity<Guid>
     public bool IsApproved { get; set; }
 
 
-    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedUtc { get; set; }
 }

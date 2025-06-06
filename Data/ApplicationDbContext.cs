@@ -1,18 +1,15 @@
 ﻿namespace Meetups.Data;
 
+
+// public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor contextAccessor) : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor contextAccessor) : DbContext(options)
 {
-
-    // public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor contextAccessor) : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
-
-
-    public DbSet<Address> Addresses { get; set; } = null!;
-    public DbSet<Category> Categories { get; set; } = null!;
-    public DbSet<Comment> Comments { get; set; } = null!;
-    public DbSet<Event> Events { get; set; } = null!;
-    public DbSet<Rsvp> Rsvps { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
-
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Event> Events { get; set; }
+    public DbSet<Rsvp> Rsvps { get; set; }
+    public DbSet<User> Users { get; set; }
 
 
 

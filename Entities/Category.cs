@@ -17,4 +17,8 @@ public class Category : BaseAuditableEntity<Guid>
     public string? Description { get; set; }
 
     public string? Icon { get; set; }
+
+
+
+    public List<Event> Events { get; set; } = new();
 }

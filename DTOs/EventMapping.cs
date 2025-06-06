@@ -49,12 +49,12 @@ public static class EventMapping
                         Email = r.User.Email,
                         ImageUrl = r.User.ImageUrl,
                     },
-                    RsvpDate = r.RsvpDate,
                     Status = r.Status,
                     PaymentId = r.PaymentId,
                     PaymentStatus = r.PaymentStatus,
                     RefundId = r.RefundId,
-                    RefundStatus = r.RefundStatus
+                    RefundStatus = r.RefundStatus,
+                    CreatedUtc = r.CreatedUtc
                 }).ToList(),
             // Comments = entity.Comments?.Select(c => c.ToDto()).ToList() ?? new List<CommentDto>()
         }).Where(dto => dto is not null).ToList();

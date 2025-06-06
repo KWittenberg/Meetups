@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Meetups.Entities;
+﻿namespace Meetups.Entities;
 
 public class Event : BaseAuditableEntity<Guid>
 {
@@ -32,29 +30,17 @@ public class Event : BaseAuditableEntity<Guid>
 
 
     // Info
-    [Required]
-    [StringLength(maximumLength: 100)]
     public string Title { get; set; } = string.Empty;
-
-    [StringLength(maximumLength: 200)]
     public string? ImageUrl { get; set; }
-
-    [StringLength(maximumLength: 4000)]
     public string? Details { get; set; }
 
 
     // DateTime and Capacity
     public DateTime Start { get; set; }
-
     public DateTime End { get; set; }
-
     public bool AllDay { get; set; }
-
     public Recurrence Recurrence { get; set; } = Recurrence.OneTime;
-
-    [Range(0, int.MaxValue)]
     public int? Capacity { get; set; }
-
 
 
     // Location
@@ -63,19 +49,12 @@ public class Event : BaseAuditableEntity<Guid>
     public Guid? AddressId { get; set; }
     public Address? Address { get; set; }
 
-    [StringLength(maximumLength: 200)]
     public string? MeetupLink { get; set; }
 
 
-
     // Price
-    [Range(0, 9999999.99)]
-    [Column(TypeName = "decimal(9, 2)")]
     public decimal? TicketPrice { get; set; }
-
     public bool Refundable { get; set; }
-
-
 
 
 

@@ -18,9 +18,12 @@ else
     <div class="mt-5 @App?.GetContentClass()">
 
         <div>
-            <p>Id: <strong>@App?.CurrentUser.Id</strong></p>
-            <p>Name: <strong>@App?.CurrentUser.Name</strong></p>
+            <img src="@App?.CurrentUser.ImageUrl" alt="Image"/>
             <p>Email: <strong>@App?.CurrentUser.Email</strong></p>
+            <p>Name: <strong>@App?.CurrentUser.Name</strong></p>
+            <p>FirstName: <strong>@App?.CurrentUser.FirstName</strong></p>
+            <p>LastName: <strong>@App?.CurrentUser.LastName</strong></p>
+            <p>Id: <strong>@App?.CurrentUser.Id</strong></p>
             <p>Role: <strong>@App?.CurrentUser.Role</strong></p>
         </div>
         
